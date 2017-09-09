@@ -6,7 +6,7 @@ function theta = LeastSquaresPolicyIteration(L, M, T, B) % L:政策反復 M:エピソー
     actions = [right; left; foward];          % 行動の候補
     nactions = 3;                             % 行動の数
     ganmma = 0.90;                            % 割引率 0.8
-    epsilon = 0.2;                            % ε-greedyの変数 0.2 小さくなると
+    epsilon = 0.01;                            % ε-greedyの変数 0.2 小さくなると
     sigma = 0.8;                              % ガウス関数の幅 0.5
     
     %ゴール地点
@@ -81,6 +81,10 @@ function theta = LeastSquaresPolicyIteration(L, M, T, B) % L:政策反復 M:エピソー
                 l_action = 3;
             end
            
+            if( and(m==M,1) )
+                stepSimulation(state, goal_pos, actions(l_action));
+            end
+            
             %行動の実行
             x = state(1);
             y = state(2);
@@ -88,9 +92,7 @@ function theta = LeastSquaresPolicyIteration(L, M, T, B) % L:政策反復 M:エピソー
             state = getRobotState(goal_pos,state,actions, l_action);
             %disp(state);
             
-            if( and(m==M,1) )
-                stepSimulation(state, goal_pos, actions(l_action));
-            end
+            
     %---------------------------------------    
             if t>1
                 aphi = zeros(B*nactions, 1);

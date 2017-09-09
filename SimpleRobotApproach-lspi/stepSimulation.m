@@ -16,7 +16,7 @@ function stepSimulation(current_position, goal_position, action) % goal_pos,stat
     viscircles(goal_position,radii)
     
     % ÉçÉ{ÉbÉgÇÃï`âÊ
-    current_position = [transpose(current_position) 0.05, 0.05]
+    current_position = [transpose(current_position)-[0.025 0.025] 0.05, 0.05]
     rectangle('Position',current_position, 'FaceColor', 'k');
     
     pause(0.1);
