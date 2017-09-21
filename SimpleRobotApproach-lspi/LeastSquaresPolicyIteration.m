@@ -5,9 +5,9 @@ function theta = LeastSquaresPolicyIteration(L, M, T, B) % L:政策反復 M:エピソー
     foward = [0 0.1];
     actions = [right; left; foward];          % 行動の候補
     nactions = 3;                             % 行動の数
-    ganmma = 0.90;                            % 割引率 0.8
-    epsilon = 0.01;                            % ε-greedyの変数 0.2 小さくなると
-    sigma = 0.8;                              % ガウス関数の幅 0.5
+    ganmma = 0.95;                            % 割引率 0.8
+    epsilon = 0.2;                            % ε-greedyの変数 0.2 小さくなると
+    sigma = 0.5;                              % ガウス関数の幅 0.5
     
     %ゴール地点
     goal_pos_x = 0.6;
@@ -23,16 +23,27 @@ function theta = LeastSquaresPolicyIteration(L, M, T, B) % L:政策反復 M:エピソー
     f_state = [0.6; 0];
     
     % ガウス関数の中心行列　36ｘ3
-    t=[-1.2, -0.35,0.5];
-    y=[-1.5, -0.5, 0.5, 1.5];
+    %{
+    t=[0.3, 0.5, 0.7, 0.9];
+    y=[0.3, 0.5, 0.7, 0.9, 1.1];
     center = [];
-    for k=1:3
-        for j=1:4
+    for k=1:4
+        for j=1:5
             c = [t(k), y(j)];
             center = [center;c];
         end
     end
-    
+    %}
+    t=[0.3, 0.6, 0.9];
+    y=[0.3, 0.5, 0.7, 0.9];
+    center = [];
+    for k=1:length(t)
+        for j=1:length(y)
+            c = [t(k), y(j)];
+            center = [center;c];
+        end
+    end
+
     % モデルパラメータの初期化
     theta = zeros(B*nactions, 1);
    
@@ -47,9 +58,9 @@ function theta = LeastSquaresPolicyIteration(L, M, T, B) % L:政策反復 M:エピソー
         % 標本
         for m=1:M
             
-            disp('*************EPISODE*************');
+            %disp('*************EPISODE*************');
             state = f_state;
-            disp([l m]);
+            %disp([l m]);
             for t=1:T+1
                 % 状態(位置 速度 行動)の観測
                 dist = sum((center - repmat(state',B,1)).^2,2);            % dist:36x1
@@ -68,11 +79,16 @@ function theta = LeastSquaresPolicyIteration(L, M, T, B) % L:政策反復 M:エピソー
                 
                 % εgreedy
                 [v, a] = max(Q);                                           % [maxnum index] = max(Q)
-                policy = ones(nactions, 1)*epsilon/nactions;
+                if(and(rem(m,5),0))
+                    epsilon = 1.0;
+                    policy = ones(nactions, 1)*epsilon/nactions;
+                else
+                    policy = ones(nactions, 1)*epsilon/nactions;
+                end
                 policy(a) = 1-epsilon+epsilon / nactions;
                 
             %行動選択
-            ran = rand;
+            ran = rand
             if(ran < policy(1))
                 l_action = 1;
             elseif(ran < policy(1) + policy(2))
@@ -81,8 +97,8 @@ function theta = LeastSquaresPolicyIteration(L, M, T, B) % L:政策反復 M:エピソー
                 l_action = 3;
             end
            
-            if( and(m==M,1) )
-                stepSimulation(state, goal_pos, actions(l_action));
+            if( and(m==M,l==L) )
+                stepSimulation(state, goal_pos, actions(l_action),strcat('Policy=',num2str(l),'Episode=',num2str(m)));
             end
             
             %行動の実行
@@ -92,6 +108,9 @@ function theta = LeastSquaresPolicyIteration(L, M, T, B) % L:政策反復 M:エピソー
             state = getRobotState(goal_pos,state,actions, l_action);
             %disp(state);
             
+            if and( state(1) == 0.6,state(2) >= 1.0)
+                disp('*****************************************');
+            end
             
     %---------------------------------------    
             if t>1
@@ -104,6 +123,7 @@ function theta = LeastSquaresPolicyIteration(L, M, T, B) % L:政策反復 M:エピソー
                 %(M*T)*Bデザイン行列Ｘ, M*T次元ベクトルr
                 X( T*(m-1)+t-1, :) = (pphi - ganmma * aphi)';
                 r( T*(m-1)+t-1 ) = getReward(goal_pos, state);
+                %disp(r);
                 dr = dr + r(T*(m-1) + t-1) *ganmma ^(t-1);
             end
             paction = l_action;
@@ -113,7 +133,7 @@ function theta = LeastSquaresPolicyIteration(L, M, T, B) % L:政策反復 M:エピソー
     
     %政策評価
     theta = pinv(X'*X)*X'*r;
-    disp(theta);
+    %disp(theta);
     
     %result = sprintf('%d)Max=%.2f Arg=%.2f Dsum=%.2f\n',l, max(r), mean(r), dr/M);
     %disp([num2str(l) +')Max='+num2str(max(r)) 'Avg='+num2str(mean(r)) 'Dsum='+num2str(dr/M)]);
@@ -123,11 +143,12 @@ function theta = LeastSquaresPolicyIteration(L, M, T, B) % L:政策反復 M:エピソー
     Dsum=[Dsum dr/M];
     end
     figure(2);
-    subplot(3,1,1)
-    plot(1:L,MaxR)
-    subplot(3,1,2)
+    %subplot(3,1,1)
+    %plot(1:L,MaxR)
+    %subplot(3,1,2)
     plot(1:L,AvgR)
-    subplot(3,1,3)
-    plot(1:L,Dsum)
+    %ylim([0 0.8])
+    %subplot(3,1,3)
+    %plot(1:L,Dsum)
 end
 
