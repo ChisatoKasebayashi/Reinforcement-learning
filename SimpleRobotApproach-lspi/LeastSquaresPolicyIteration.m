@@ -19,8 +19,6 @@ function theta = LeastSquaresPolicyIteration(L, M, T, B) % L:政策反復 M:エピソー
     X = zeros(M*T, B*nactions);
     r = zeros(M*T, 1);
     
-    % 一回目のエピソードの初期値
-    f_state = [0.6; 0];
     
     % ガウス関数の中心行列　36ｘ3
     %{
@@ -34,8 +32,8 @@ function theta = LeastSquaresPolicyIteration(L, M, T, B) % L:政策反復 M:エピソー
         end
     end
     %}
-    t=[0.3, 0.6, 0.9];
-    y=[0.3, 0.5, 0.7, 0.9];
+     t=[0.6];
+    y=[0 1.0];
     center = [];
     for k=1:length(t)
         for j=1:length(y)
@@ -43,6 +41,7 @@ function theta = LeastSquaresPolicyIteration(L, M, T, B) % L:政策反復 M:エピソー
             center = [center;c];
         end
     end
+
 
     % モデルパラメータの初期化
     theta = zeros(B*nactions, 1);
@@ -57,11 +56,14 @@ function theta = LeastSquaresPolicyIteration(L, M, T, B) % L:政策反復 M:エピソー
         
         % 標本
         for m=1:M
+            % 一回目のエピソードの初期値
+            f_state = [0.6; 0];
             
             %disp('*************EPISODE*************');
-            state = f_state;
+            
             %disp([l m]);
             for t=1:T+1
+                state = f_state;
                 % 状態(位置 速度 行動)の観測
                 dist = sum((center - repmat(state',B,1)).^2,2);            % dist:36x1
                 %test = repmat(state',B,1);
@@ -105,7 +107,7 @@ function theta = LeastSquaresPolicyIteration(L, M, T, B) % L:政策反復 M:エピソー
             x = state(1);
             y = state(2);
             test = actions(l_action);
-            state = getRobotState(goal_pos,state,actions, l_action);
+            f_state = getRobotState(goal_pos,state,actions, l_action);
             %disp(state);
             
             if and( state(1) == 0.6,state(2) >= 1.0)

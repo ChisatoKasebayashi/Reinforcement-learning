@@ -1,10 +1,10 @@
 function main
 clear all;
 
-L = 100;
-M = 20;
-T = 15;
-B=12;
+L = 30;
+M = 100;
+T = 12;
+B=2;
 gamma=0.95;
 nactions=3;
 sigma = 0.5;
@@ -23,8 +23,8 @@ for k=1:3
 end
 %}
 
- t=[0.3, 0.6, 0.9];
-    y=[0.3, 0.5, 0.7, 0.9];
+    t=[0.6];
+    y=[0 1.0];
     center = [];
     for k=1:length(t)
         for j=1:length(y)

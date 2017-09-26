@@ -4,14 +4,11 @@ function theta = LeastSquaresPolicyIteration(L, M, T, B) % L:政策反復 M:エピソー
     nactions = 3;                      % 行動の数
     ganmma = 0.90;                     % 割引率 0.8
     epsilon = 0.2;                     % ε-greedyの変数 0.2 小さくなると
-    sigma = 0.8;                       % ガウス関数の幅 0.5
+    sigma = 0.5;                       % ガウス関数の幅 0.5
     
     % デザイン行列X ベクトルrの初期化
     X = zeros(M*T, B*nactions);
     r = zeros(M*T, 1);
-    
-    % 一回目のエピソードの初期値
-    f_state = [-0.5; 0];
     
     % ガウス関数の中心行列　36ｘ3
     t=[-1.2, -0.35,0.5];
@@ -38,12 +35,11 @@ function theta = LeastSquaresPolicyIteration(L, M, T, B) % L:政策反復 M:エピソー
         
         % 標本
         for m=1:M
+            % 一回目のエピソードの初期値
+            f_state = [-0.5; 0];
             
-
-            disp('*************EPISODE*************');
-            state = f_state;
-            disp([l m]);
             for t=1:T+1
+                state = f_state;
                 % 状態(位置 速度 行動)の観測
                 dist = sum((center - repmat(state',B,1)).^2,2);            % dist:36x1
                 %test = repmat(state',B,1);
@@ -78,10 +74,10 @@ function theta = LeastSquaresPolicyIteration(L, M, T, B) % L:政策反復 M:エピソー
             %行動の実行
             x = state(1);
             dx = state(2);
-            state = getCarState(x,dx,actions(action));
+            f_state = getCarState(x,dx,actions(action));
             %disp(state);
             
-            if( and(m==M,1) )
+            if( and(m==M,l==L) )
                 plotMountainCar(state(1));
             end
     %---------------------------------------    
