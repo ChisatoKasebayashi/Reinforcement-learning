@@ -1,37 +1,27 @@
 function main
 clear all;
 
-L = 30;
-M = 100;
-T = 12;
-B=2;
-gamma=0.95;
-nactions=3;
-sigma = 0.5;
-theta=LeastSquaresPolicyIteration(L,M,T,B);
-
-% ガウス関数の中心行列　36ｘ3
-%{
-t=[-1.2, -0.35,0.5];
-y=[-1.5, -0.5, 0.5, 1.5];
+t = [0 1];
+y = [0 1.0];
+%t=[0.3, 0.5, 0.7, 0.9];
+%y=[0.3, 0.5, 0.7, 0.9, 1.1];
 center = [];
-for k=1:3
-    for j=1:4
+for k=1:length(t)
+    for j=1:length(y)
         c = [t(k), y(j)];
         center = [center;c];
     end
 end
-%}
 
-    t=[0.6];
-    y=[0 1.0];
-    center = [];
-    for k=1:length(t)
-        for j=1:length(y)
-            c = [t(k), y(j)];
-            center = [center;c];
-        end
-    end
+L = 10;
+M = 100;
+T = 12;
+B=length(center);
+gamma=0.95;
+nactions=3;
+sigma = 1;
+
+theta=LeastSquaresPolicyIteration(L,M,T,B,center);
 
 figure(3);
 syms sx sdx;

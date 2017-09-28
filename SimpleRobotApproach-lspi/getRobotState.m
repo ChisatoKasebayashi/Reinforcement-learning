@@ -4,7 +4,7 @@ function state = getRobotState(goal_pos, state, actions, l_action)
         actions = [0.1 0];
     elseif(l_action == 2)
         actions = [-0.1 0];
-    else(l_action == 3)
+    else
         actions = [0 0.1];
     end
     
@@ -12,8 +12,5 @@ function state = getRobotState(goal_pos, state, actions, l_action)
     y = state(2) + actions(2);
         
     state = [x; y];
-%state = transpose(s);
-%disp(state);
-% s = transpose(x, dx)
-    
+
 end
