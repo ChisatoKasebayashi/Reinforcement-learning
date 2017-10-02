@@ -48,13 +48,22 @@ for l=1:L
     
     % 標本
     for m=1:M
+        
+        %ゴール地点の変更
+        goal_pos_x = round(rand(), 1);
+        goal_pos_y = round(rand(), 1);
+        goal_pos = [goal_pos_x goal_pos_y];
+        
         % 一回目のエピソードの初期値
-        f_state = [0.6; 0];
-        
-        
+        first_robot_pos = [0.6; 0];
+        first_l_action = 4;
+        f_state = getRobotState(goal_pos, first_robot_pos, first_l_action);
+
         %disp([l m]);
         for t=1:T
             state = f_state;
+            disp(strcat('Step=',num2str(t),', (x,y) : (',num2str(state(1)),',',num2str(state(2)),')'));
+            
             % 状態(位置 速度 行動)の観測
             dist = sum((center - repmat(state',B,1)).^2,2);
             %test = repmat(state',B,1);
@@ -98,10 +107,7 @@ for l=1:L
             end
             
             %行動の実行
-            x = state(1);
-            y = state(2);
-            test = actions(l_action);
-            f_state = getRobotState(goal_pos,state,actions, l_action);
+            f_state = getRobotState(goal_pos, state, l_action);
             %disp(state);
             
             %if and( state(1) == 0.6,state(2) >= 1.0)
@@ -119,8 +125,9 @@ for l=1:L
                 %(M*T)*Bデザイン行列Ｘ, M*T次元ベクトルr
                 X( T*(m-1)+t-1, :) = (pphi - ganmma * aphi)';
                 r( T*(m-1)+t-1 ) = getReward(goal_pos, state);
+                
                 if m==M
-                    disp(strcat('Step=',num2str(t),', Reward=',num2str(r( T*(m-1)+t-1 ))));
+                    %disp(strcat('Step=',num2str(t),', Reward=',num2str(r( T*(m-1)+t-1 ))));
                     figure(6);
                     hold on;
                     bar(t,r( T*(m-1)+t-1 ));
@@ -144,9 +151,9 @@ for l=1:L
     
     %政策評価
     theta = pinv(X'*X)*X'*r;
-    theta2 = (X'*X+eye(12)*0.001)\(X'*r);
-    disp(theta);
-    disp(theta2);
+    %theta2 = (X'*X+eye(12)*0.001)\(X'*r);
+    %disp(theta);
+    %disp(theta2);
     %result = sprintf('%d)Max=%.2f Arg=%.2f Dsum=%.2f\n',l, max(r), mean(r), dr/M);
     %disp([num2str(l) +')Max='+num2str(max(r)) 'Avg='+num2str(mean(r)) 'Dsum='+num2str(dr/M)]);
     %disp([l max(r) mean(r) dr/M]);
