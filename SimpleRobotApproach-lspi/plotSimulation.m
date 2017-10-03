@@ -19,7 +19,7 @@ radii = 0.03;
 viscircles(goal_position,radii);
 
 % ƒƒ{ƒbƒg‚Ì•`‰æ
-current_position = [transpose(current_position)-[0.025 0.025] 0.05, 0.05];
+current_position = [transpose(current_position)-[0.025, 0.025], 0.05, 0.05];
 rectangle('Position',current_position, 'FaceColor', 'k');
 
 %saveas(field, 'simpleSim.jpg');

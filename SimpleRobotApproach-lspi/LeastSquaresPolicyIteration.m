@@ -55,14 +55,15 @@ for l=1:L
         goal_pos = [goal_pos_x goal_pos_y];
         
         % 一回目のエピソードの初期値
+        robot_pos = [];
         first_robot_pos = [0.6; 0];
+        robot_pos = first_robot_pos;
         first_l_action = 4;
         f_state = getRobotState(goal_pos, first_robot_pos, first_l_action);
 
         %disp([l m]);
         for t=1:T
             state = f_state;
-            disp(strcat('Step=',num2str(t),', (x,y) : (',num2str(state(1)),',',num2str(state(2)),')'));
             
             % 状態(位置 速度 行動)の観測
             dist = sum((center - repmat(state',B,1)).^2,2);
@@ -103,11 +104,12 @@ for l=1:L
             end
             
             if and(m==M,1)
-                stepSimulation(state, goal_pos, actions(l_action),strcat('Policy=',num2str(l),' Episode=',num2str(m)));
+                plotSimulation(robot_pos, goal_pos, actions(l_action),strcat('Policy=',num2str(l),' Episode=',num2str(m)));
             end
             
             %行動の実行
-            f_state = getRobotState(goal_pos, state, l_action);
+            robot_pos = stepSimulation(robot_pos,l_action);
+            f_state = getRobotState(goal_pos, robot_pos, l_action);
             %disp(state);
             
             %if and( state(1) == 0.6,state(2) >= 1.0)
@@ -127,7 +129,7 @@ for l=1:L
                 r( T*(m-1)+t-1 ) = getReward(goal_pos, state);
                 
                 if m==M
-                    %disp(strcat('Step=',num2str(t),', Reward=',num2str(r( T*(m-1)+t-1 ))));
+                    disp(strcat('Step=',num2str(t),', RobotPos(x,y):(',num2str(state(1)),', ',num2str(state(2)),')',', GoalPos(x,y):(',num2str(goal_pos_x),', ',num2str(goal_pos_y),')', 'Reward=',num2str(r( T*(m-1)+t-1 ))));
                     figure(6);
                     hold on;
                     bar(t,r( T*(m-1)+t-1 ));
@@ -164,10 +166,13 @@ end
 figure(2);
 subplot(3,1,1)
 plot(1:L,MaxR)
+title('最大報酬');
 subplot(3,1,2)
 plot(1:L,AvgR)
 ylim([0 0.8])
+title('平均報酬');
 subplot(3,1,3)
 plot(1:L,Dsum)
+title('割引報酬');
 end
 
