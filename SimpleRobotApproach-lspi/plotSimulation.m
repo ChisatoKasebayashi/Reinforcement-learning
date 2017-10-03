@@ -1,4 +1,4 @@
-function stepSimulation(current_position, goal_position, action, Title) % goal_pos,state,actions(action)
+function stepSimulation(relative_position, robot_position, goal_position, action, Title) % goal_pos,state,actions(action)
 
 figure(1);
 clf;
@@ -19,7 +19,7 @@ radii = 0.03;
 viscircles(goal_position,radii);
 
 % ÉçÉ{ÉbÉgÇÃï`âÊ
-current_position = [transpose(current_position)-[0.025, 0.025], 0.05, 0.05];
+current_position = [transpose(robot_position)-[0.025, 0.025], 0.05, 0.05];
 rectangle('Position',current_position, 'FaceColor', 'k');
 
 %saveas(field, 'simpleSim.jpg');

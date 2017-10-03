@@ -13,9 +13,9 @@ for k=1:length(t)
     end
 end
 
-L = 10;
+L = 15;
 M = 100;
-T = 12;
+T = 15;
 B=length(center);
 gamma=0.95;
 nactions=3;

@@ -6,7 +6,7 @@ foward = [0 0.1];
 actions = [right; left; foward];          % 行動の候補
 nactions = 3;                             % 行動の数
 ganmma = 0.95;                            % 割引率 0.8
-epsilon = 0.1;                            % ε-greedyの変数 0.2 小さくなると
+epsilon = 0.2;                            % ε-greedyの変数 0.2 小さくなると
 sigma = 1;                              % ガウス関数の幅 0.5
 
 %ゴール地点
@@ -104,7 +104,8 @@ for l=1:L
             end
             
             if and(m==M,1)
-                plotSimulation(robot_pos, goal_pos, actions(l_action),strcat('Policy=',num2str(l),' Episode=',num2str(m)));
+                plotSimulation(state, robot_pos, goal_pos, actions(l_action),strcat('Policy=',num2str(l),' Episode=',num2str(m)));
+                %disp(strcat('PLOT : RobotPos(', num2str(robot_pos(1)) , ',' ,num2str(robot_pos(2)), ')'));
             end
             
             %行動の実行
@@ -126,10 +127,10 @@ for l=1:L
                 
                 %(M*T)*Bデザイン行列Ｘ, M*T次元ベクトルr
                 X( T*(m-1)+t-1, :) = (pphi - ganmma * aphi)';
-                r( T*(m-1)+t-1 ) = getReward(goal_pos, state);
+                r( T*(m-1)+t-1 ) = getReward(goal_pos, robot_pos);
                 
                 if m==M
-                    disp(strcat('Step=',num2str(t),', RobotPos(x,y):(',num2str(state(1)),', ',num2str(state(2)),')',', GoalPos(x,y):(',num2str(goal_pos_x),', ',num2str(goal_pos_y),')', 'Reward=',num2str(r( T*(m-1)+t-1 ))));
+                    disp(strcat('Step=',num2str(t),', RobotPos(x,y):(',num2str(robot_pos(1)),', ',num2str(robot_pos(2)),')',', GoalPos(x,y):(',num2str(goal_pos_x),', ',num2str(goal_pos_y),'),', ' Reward=',num2str(r( T*(m-1)+t-1 ))));
                     figure(6);
                     hold on;
                     bar(t,r( T*(m-1)+t-1 ));
