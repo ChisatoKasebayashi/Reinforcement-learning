@@ -6,8 +6,8 @@ foward = [0 0.1];
 actions = [right; left; foward];          % 行動の候補
 nactions = 3;                             % 行動の数
 ganmma = 0.95;                            % 割引率 0.8
-epsilon = 0.2;                            % ε-greedyの変数 0.2 小さくなると
-sigma = 1;                              % ガウス関数の幅 0.5
+epsilon = 0.3;                            % ε-greedyの変数 0.2 小さくなると
+sigma = 0.5;                              % ガウス関数の幅 0.5
 
 %ゴール地点
 goal_pos_x = 0.6;
@@ -16,8 +16,10 @@ goal_pos_y = 1.0;
 goal_pos = [goal_pos_x goal_pos_y];
 
 % デザイン行列X ベクトルrの初期化
-X = zeros(M*T, B*nactions);
-r = zeros(M*T, 1);
+%X = zeros(M*T, B*nactions);
+%r = zeros(M*T, 1);
+X = [];
+r = [];
 
 
 % ガウス関数の中心行列　36ｘ3
@@ -51,7 +53,7 @@ for l=1:L
         
         %ゴール地点の変更
         goal_pos_x = round(rand(), 1);
-        goal_pos_y = round(rand(), 1);
+        goal_pos_y = 1;
         goal_pos = [goal_pos_x goal_pos_y];
         
         % 一回目のエピソードの初期値
@@ -63,6 +65,7 @@ for l=1:L
 
         %disp([l m]);
         for t=1:T
+            t_epsilon = epsilon-max(t*epsilon/T,0.005);
             state = f_state;
             
             % 状態(位置 速度 行動)の観測
@@ -90,8 +93,8 @@ for l=1:L
                     policy = ones(nactions, 1)*epsilon/nactions;
                 end
             %}
-            policy = ones(nactions, 1)*epsilon/nactions;
-            policy(a) = 1-epsilon+epsilon / nactions;
+            policy = ones(nactions, 1)*t_epsilon/nactions;
+            policy(a) = 1-t_epsilon+t_epsilon / nactions;
             
             %行動選択
             ran = rand;
@@ -127,9 +130,24 @@ for l=1:L
                 
                 %(M*T)*Bデザイン行列Ｘ, M*T次元ベクトルr
                 X( T*(m-1)+t-1, :) = (pphi - ganmma * aphi)';
-                r( T*(m-1)+t-1 ) = getReward(goal_pos, robot_pos);
+                %r( T*(m-1)+t-1 ) = getReward(goal_pos, robot_pos);
+                
+                rw = getReward(goal_pos, robot_pos);
+                %　目的地についたら残りの報酬を1にす
+                if rw > 0.99
+                    r( T*(m-1)+t-1 ) = getReward(goal_pos, robot_pos);
+                    disp('########################');
+                    pause(0.2);
+                    clf(figure(6));
+                    break;
+                else
+                    r( T*(m-1)+t-1 ) = getReward(goal_pos, robot_pos);
+                end
+                    
+                
                 
                 if m==M
+                    disp(rw);
                     disp(strcat('Step=',num2str(t),', RobotPos(x,y):(',num2str(robot_pos(1)),', ',num2str(robot_pos(2)),')',', GoalPos(x,y):(',num2str(goal_pos_x),', ',num2str(goal_pos_y),'),', ' Reward=',num2str(r( T*(m-1)+t-1 ))));
                     figure(6);
                     hold on;
@@ -149,11 +167,11 @@ for l=1:L
                 disp('*************EPISODE*************');
             end
         end
-        
+        %disp('detadetadetadetadetadetadetadetadetadeta');
     end
     
     %政策評価
-    theta = pinv(X'*X)*X'*r;
+    theta = pinv(X'*X)*X'*r';
     %theta2 = (X'*X+eye(12)*0.001)\(X'*r);
     %disp(theta);
     %disp(theta2);
