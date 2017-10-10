@@ -16,25 +16,9 @@ goal_pos_y = 1.0;
 goal_pos = [goal_pos_x goal_pos_y];
 
 % デザイン行列X ベクトルrの初期化
-%X = zeros(M*T, B*nactions);
-%r = zeros(M*T, 1);
 X = [];
 r = [];
-
-
-% ガウス関数の中心行列　36ｘ3
-
-%{
-    t=[0.6];
-    y=[0 1.0];
-    center = [];
-    for k=1:length(t)
-        for j=1:length(y)
-            c = [t(k), y(j)];
-            center = [center;c];
-        end
-    end
-%}
+count = [];
 
 
 % モデルパラメータの初期化
@@ -47,10 +31,9 @@ Dsum=[];
 % 政策反復
 for l=1:L
     dr = 0;
-    
+
     % 標本
     for m=1:M
-        
         %ゴール地点の変更
         goal_pos_x = round(rand(), 1);
         goal_pos_y = 1;
@@ -63,7 +46,7 @@ for l=1:L
         first_l_action = 4;
         f_state = getRobotState(goal_pos, first_robot_pos, first_l_action);
 
-        %disp([l m]);
+        
         for t=1:T
             t_epsilon = epsilon-max(t*epsilon/T,0.005);
             state = f_state;
@@ -85,14 +68,7 @@ for l=1:L
             
             % εgreedy
             [v, a] = max(Q);
-            %{
-                if(not(rem(m,5)))
-                    epsilon = 1.0;
-                    policy = ones(nactions, 1)*epsilon/nactions;
-                else
-                    policy = ones(nactions, 1)*epsilon/nactions;
-                end
-            %}
+
             policy = ones(nactions, 1)*t_epsilon/nactions;
             policy(a) = 1-t_epsilon+t_epsilon / nactions;
             
@@ -114,11 +90,6 @@ for l=1:L
             %行動の実行
             robot_pos = stepSimulation(robot_pos,l_action);
             f_state = getRobotState(goal_pos, robot_pos, l_action);
-            %disp(state);
-            
-            %if and( state(1) == 0.6,state(2) >= 1.0)
-            %   disp('*****************************************');
-            %end
             
             %---------------------------------------
             if t>1
@@ -131,23 +102,22 @@ for l=1:L
                 %(M*T)*Bデザイン行列Ｘ, M*T次元ベクトルr
                 X( T*(m-1)+t-1, :) = (pphi - ganmma * aphi)';
                 %r( T*(m-1)+t-1 ) = getReward(goal_pos, robot_pos);
-                
-                rw = getReward(goal_pos, robot_pos);
-                %　目的地についたら残りの報酬を1にす
-                if rw > 0.99
+                %　目的地についたら残りの報酬を1にする
+                if getReward(goal_pos, robot_pos) > 0.99
                     r( T*(m-1)+t-1 ) = getReward(goal_pos, robot_pos);
-                    disp('########################');
-                    pause(0.2);
+                    if m==M
+                        disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+                        disp('!!!!!!!!!!!!CLEAR!!!!!!!!!!!!!!');
+                        disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+                    end
+                    pause(0.1);
                     clf(figure(6));
                     break;
                 else
                     r( T*(m-1)+t-1 ) = getReward(goal_pos, robot_pos);
                 end
                     
-                
-                
                 if m==M
-                    disp(rw);
                     disp(strcat('Step=',num2str(t),', RobotPos(x,y):(',num2str(robot_pos(1)),', ',num2str(robot_pos(2)),')',', GoalPos(x,y):(',num2str(goal_pos_x),', ',num2str(goal_pos_y),'),', ' Reward=',num2str(r( T*(m-1)+t-1 ))));
                     figure(6);
                     hold on;
@@ -163,11 +133,11 @@ for l=1:L
             end
             paction = l_action;
             pstate = state;
+       
             if and(t==T,m==M)
                 disp('*************EPISODE*************');
             end
         end
-        %disp('detadetadetadetadetadetadetadetadetadeta');
     end
     
     %政策評価
