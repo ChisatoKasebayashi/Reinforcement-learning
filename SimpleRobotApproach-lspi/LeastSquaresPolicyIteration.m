@@ -6,7 +6,7 @@ foward = [0 0.1];
 actions = [right; left; foward];          % 行動の候補
 nactions = 3;                             % 行動の数
 ganmma = 0.95;                            % 割引率 0.8
-epsilon = 0.3;                            % ε-greedyの変数 0.2 小さくなると
+epsilon = 0.2;                            % ε-greedyの変数 0.2 小さくなると
 sigma = 0.5;                              % ガウス関数の幅 0.5
 
 %ゴール地点
@@ -34,9 +34,11 @@ for l=1:L
 
     % 標本
     for m=1:M
+        goal_f = 0;
+        
         %ゴール地点の変更
         goal_pos_x = round(rand(), 1);
-        goal_pos_y = 1;
+        goal_pos_y =  round(rand(), 1);
         goal_pos = [goal_pos_x goal_pos_y];
         
         % 一回目のエピソードの初期値
@@ -45,10 +47,12 @@ for l=1:L
         robot_pos = first_robot_pos;
         first_l_action = 4;
         f_state = getRobotState(goal_pos, first_robot_pos, first_l_action);
+        
+        % εを徐々に小さくする
+        t_epsilon = epsilon - m*epsilon/M;
 
         
         for t=1:T
-            t_epsilon = epsilon-max(t*epsilon/T,0.005);
             state = f_state;
             
             % 状態(位置 速度 行動)の観測
@@ -84,13 +88,14 @@ for l=1:L
             
             if and(m==M,1)
                 plotSimulation(state, robot_pos, goal_pos, actions(l_action),strcat('Policy=',num2str(l),' Episode=',num2str(m)));
-                %disp(strcat('PLOT : RobotPos(', num2str(robot_pos(1)) , ',' ,num2str(robot_pos(2)), ')'));
             end
             
             %行動の実行
-            robot_pos = stepSimulation(robot_pos,l_action);
-            f_state = getRobotState(goal_pos, robot_pos, l_action);
-            
+            if goal_f ~= 1
+                robot_pos = stepSimulation(robot_pos,l_action);
+                f_state = getRobotState(goal_pos, robot_pos, l_action);
+            else
+            end
             %---------------------------------------
             if t>1
                 aphi = zeros(B*nactions, 1);
@@ -101,20 +106,23 @@ for l=1:L
                 
                 %(M*T)*Bデザイン行列Ｘ, M*T次元ベクトルr
                 X( T*(m-1)+t-1, :) = (pphi - ganmma * aphi)';
-                %r( T*(m-1)+t-1 ) = getReward(goal_pos, robot_pos);
+
                 %　目的地についたら残りの報酬を1にする
-                if getReward(goal_pos, robot_pos) > 0.99
+                if  int64(state(2)*10) < 0
                     r( T*(m-1)+t-1 ) = getReward(goal_pos, robot_pos);
-                    if m==M
+                    f_state = state;
+                    goal_f = 1;
+                    if true
                         disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
                         disp('!!!!!!!!!!!!CLEAR!!!!!!!!!!!!!!');
                         disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
                     end
-                    pause(0.1);
-                    clf(figure(6));
-                    break;
+                elseif int64(state(1)*10)==0 && int64(state(2)*10)==0
+                    r( T*(m-1)+t-1 ) = 1;
+                    f_state = state;
+                    goal_f = 1;
                 else
-                    r( T*(m-1)+t-1 ) = getReward(goal_pos, robot_pos);
+                    r( T*(m-1)+t-1 ) = (T-t)/T*getReward(goal_pos, robot_pos);
                 end
                     
                 if m==M
@@ -142,12 +150,6 @@ for l=1:L
     
     %政策評価
     theta = pinv(X'*X)*X'*r';
-    %theta2 = (X'*X+eye(12)*0.001)\(X'*r);
-    %disp(theta);
-    %disp(theta2);
-    %result = sprintf('%d)Max=%.2f Arg=%.2f Dsum=%.2f\n',l, max(r), mean(r), dr/M);
-    %disp([num2str(l) +')Max='+num2str(max(r)) 'Avg='+num2str(mean(r)) 'Dsum='+num2str(dr/M)]);
-    %disp([l max(r) mean(r) dr/M]);
     MaxR=[MaxR max(r)];
     AvgR=[AvgR mean(r)];
     Dsum=[Dsum dr/M];
