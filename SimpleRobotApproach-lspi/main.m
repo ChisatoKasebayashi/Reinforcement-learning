@@ -1,5 +1,8 @@
 function main
-clear all;
+
+clear figure(1);
+clear figure(2);
+clear figure(3);
 
 t = [-0.4 0 0.4];
 y = [-0.4 0 0.4];

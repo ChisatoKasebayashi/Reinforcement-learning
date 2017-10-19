@@ -6,7 +6,7 @@ foward = [0 0.1];
 actions = [right; left; foward];          % 行動の候補
 nactions = 3;                             % 行動の数
 ganmma = 0.95;                            % 割引率 0.8
-epsilon = 0.2;                            % ε-greedyの変数 0.2 小さくなると
+t_epsilon = 0.1;                            % ε-greedyの変数 0.2 小さくなると
 sigma = 0.5;                              % ガウス関数の幅 0.5
 
 %ゴール地点
@@ -49,7 +49,7 @@ for l=1:L
         f_state = getRobotState(goal_pos, first_robot_pos, first_l_action);
         
         % εを徐々に小さくする
-        t_epsilon = epsilon - m*epsilon/M;
+        %t_epsilon = epsilon - m*epsilon/M;
 
         
         for t=1:T
@@ -106,35 +106,38 @@ for l=1:L
                 
                 %(M*T)*Bデザイン行列Ｘ, M*T次元ベクトルr
                 X( T*(m-1)+t-1, :) = (pphi - ganmma * aphi)';
+                r( T*(m-1)+t-1 ) = getReward(goal_pos, robot_pos); %0でブレイク
+                %どんどんｒを追加０になったらbreak
 
+%{
                 %　目的地についたら残りの報酬を1にする
                 if  int64(state(2)*10) < 0
                     r( T*(m-1)+t-1 ) = getReward(goal_pos, robot_pos);
+                    %r( T*(m-1)+t-1 ) = p_r;
                     f_state = state;
                     goal_f = 1;
-                    if true
-                        disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-                        disp('!!!!!!!!!!!!CLEAR!!!!!!!!!!!!!!');
-                        disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-                    end
                 elseif int64(state(1)*10)==0 && int64(state(2)*10)==0
-                    r( T*(m-1)+t-1 ) = 1;
+                    r( T*(m-1)+t-1 ) = ;
                     f_state = state;
                     goal_f = 1;
+                    disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+                    disp('!!!!!!!!!!!!CLEAR!!!!!!!!!!!!!!');
+                    disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
                 else
-                    r( T*(m-1)+t-1 ) = (T-t)/T*getReward(goal_pos, robot_pos);
+                    r( T*(m-1)+t-1 ) = getReward(goal_pos, robot_pos);
+                    %p_r = (T-t)/T*getReward(goal_pos, robot_pos);
                 end
-                    
+%}
+                
                 if m==M
                     disp(strcat('Step=',num2str(t),', RobotPos(x,y):(',num2str(robot_pos(1)),', ',num2str(robot_pos(2)),')',', GoalPos(x,y):(',num2str(goal_pos_x),', ',num2str(goal_pos_y),'),', ' Reward=',num2str(r( T*(m-1)+t-1 ))));
-                    figure(6);
+                    figure(2);
                     hold on;
                     bar(t,r( T*(m-1)+t-1 ));
                     xlim([0 T]);
-                    ylim([0 1]);
                     pause(0.1);
                     if t==T
-                        clf(figure(6));
+                        clf(figure(2));
                     end
                 end
                 dr = dr + r(T*(m-1) + t-1) *ganmma ^(t-1);
@@ -154,7 +157,7 @@ for l=1:L
     AvgR=[AvgR mean(r)];
     Dsum=[Dsum dr/M];
 end
-figure(2);
+figure(4);
 subplot(3,1,1)
 plot(1:L,MaxR)
 title('最大報酬');
