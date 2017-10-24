@@ -1,7 +1,7 @@
-function [reward] = getReward(goal_position, current_position)
+function [reward] = getReward(state)
 
-relative_position = goal_position - current_position';
-reward = -sum(abs(relative_position));
+    reward = -sum(abs(state));
+
 
 %reward = (max(0, min(dist,1))-1)^2;
 

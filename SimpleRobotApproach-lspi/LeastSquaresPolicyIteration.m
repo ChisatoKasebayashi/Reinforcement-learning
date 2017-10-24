@@ -16,8 +16,7 @@ goal_pos_y = 1.0;
 goal_pos = [goal_pos_x goal_pos_y];
 
 % デザイン行列X ベクトルrの初期化
-X = [];
-r = [];
+X = []; %M*T,3*B
 count = [];
 
 
@@ -31,10 +30,11 @@ Dsum=[];
 % 政策反復
 for l=1:L
     dr = 0;
-
+    r = [];
+    X = [];
+    x = [];
     % 標本
     for m=1:M
-        goal_f = 0;
         
         %ゴール地点の変更
         goal_pos_x = round(rand(), 1);
@@ -91,11 +91,8 @@ for l=1:L
             end
             
             %行動の実行
-            if goal_f ~= 1
-                robot_pos = stepSimulation(robot_pos,l_action);
-                f_state = getRobotState(goal_pos, robot_pos, l_action);
-            else
-            end
+            robot_pos = stepSimulation(robot_pos,l_action);
+            f_state = getRobotState(goal_pos, robot_pos, l_action);
             %---------------------------------------
             if t>1
                 aphi = zeros(B*nactions, 1);
@@ -105,42 +102,28 @@ for l=1:L
                 pphi = getPhi(pstate, paction, center, B, sigma, nactions);
                 
                 %(M*T)*Bデザイン行列Ｘ, M*T次元ベクトルr
-                X( T*(m-1)+t-1, :) = (pphi - ganmma * aphi)';
-                r( T*(m-1)+t-1 ) = getReward(goal_pos, robot_pos); %0でブレイク
-                %どんどんｒを追加０になったらbreak
-
-%{
-                %　目的地についたら残りの報酬を1にする
-                if  int64(state(2)*10) < 0
-                    r( T*(m-1)+t-1 ) = getReward(goal_pos, robot_pos);
-                    %r( T*(m-1)+t-1 ) = p_r;
-                    f_state = state;
-                    goal_f = 1;
-                elseif int64(state(1)*10)==0 && int64(state(2)*10)==0
-                    r( T*(m-1)+t-1 ) = ;
-                    f_state = state;
-                    goal_f = 1;
-                    disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-                    disp('!!!!!!!!!!!!CLEAR!!!!!!!!!!!!!!');
-                    disp('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-                else
-                    r( T*(m-1)+t-1 ) = getReward(goal_pos, robot_pos);
-                    %p_r = (T-t)/T*getReward(goal_pos, robot_pos);
+                x = [(pphi - ganmma * aphi)'];
+                X = [X; x];
+                r = [r,getReward(state)]; 
+                if round(state(1),1) == 0 && round(state(2),1) == 0
+                    disp('!!!!!!!!!!!!!!!!!!!!!!!!!!');
+                    disp('!!!!!!!!!!!GOAL!!!!!!!!!!!');
+                    disp('!!!!!!!!!!!!!!!!!!!!!!!!!!');
+                    break;
                 end
-%}
                 
                 if m==M
-                    disp(strcat('Step=',num2str(t),', RobotPos(x,y):(',num2str(robot_pos(1)),', ',num2str(robot_pos(2)),')',', GoalPos(x,y):(',num2str(goal_pos_x),', ',num2str(goal_pos_y),'),', ' Reward=',num2str(r( T*(m-1)+t-1 ))));
+                    disp(strcat('Step=',num2str(t),', RobotPos(x,y):(',num2str(robot_pos(1)),', ',num2str(robot_pos(2)),')',', GoalPos(x,y):(',num2str(goal_pos_x),', ',num2str(goal_pos_y),'),', ' Reward=',num2str(r(length(r)))));
                     figure(2);
                     hold on;
-                    bar(t,r( T*(m-1)+t-1 ));
+                    bar(t,r(length(r)));
                     xlim([0 T]);
                     pause(0.1);
                     if t==T
                         clf(figure(2));
                     end
                 end
-                dr = dr + r(T*(m-1) + t-1) *ganmma ^(t-1);
+                %dr = dr + r *ganmma ^(t-1);
             end
             paction = l_action;
             pstate = state;
@@ -163,7 +146,7 @@ plot(1:L,MaxR)
 title('最大報酬');
 subplot(3,1,2)
 plot(1:L,AvgR)
-ylim([0 0.8])
+ylim([-1.5 0])
 title('平均報酬');
 subplot(3,1,3)
 plot(1:L,Dsum)
