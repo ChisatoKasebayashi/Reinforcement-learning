@@ -1,4 +1,4 @@
-function main
+
 
 clear figure(1);
 clear figure(2);
@@ -51,4 +51,3 @@ xlabel('x')
 ylabel('y')
 zlim([-50 30])
 title('forward')
-end

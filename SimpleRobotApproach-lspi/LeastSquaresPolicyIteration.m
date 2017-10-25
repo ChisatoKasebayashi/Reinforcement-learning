@@ -3,8 +3,9 @@ function theta = LeastSquaresPolicyIteration(L, M, T, B,center) % L:­ô”½•œ M:ƒ
 right = [0.1 0];
 left = [-0.1 0];
 foward = [0 0.1];
-actions = [right; left; foward];          % s“®‚ÌŒó•â
-nactions = 3;                             % s“®‚Ì”
+back = [0,-0.1];
+actions = [right; left; foward; back];          % s“®‚ÌŒó•â
+nactions = 4;                             % s“®‚Ì”
 ganmma = 0.95;                            % Š„ˆø—¦ 0.8
 t_epsilon = 0.1;                            % ƒÃ-greedy‚Ì•Ï” 0.2 ¬‚³‚­‚È‚é‚Æ
 sigma = 0.5;                              % ƒKƒEƒXŠÖ”‚Ì• 0.5
@@ -45,7 +46,7 @@ for l=1:L
         robot_pos = [];
         first_robot_pos = [0.6; 0];
         robot_pos = first_robot_pos;
-        first_l_action = 4;
+        first_l_action = 5;
         f_state = getRobotState(goal_pos, first_robot_pos, first_l_action);
         
         % ƒÃ‚ğ™X‚É¬‚³‚­‚·‚é
@@ -72,7 +73,7 @@ for l=1:L
             
             % ƒÃgreedy
             [v, a] = max(Q);
-
+            t_epsilon = 1 - l*0.09;
             policy = ones(nactions, 1)*t_epsilon/nactions;
             policy(a) = 1-t_epsilon+t_epsilon / nactions;
             
@@ -82,8 +83,10 @@ for l=1:L
                 l_action = 1;
             elseif(ran < policy(1) + policy(2))
                 l_action = 2;
-            else
+            elseif(ran < policy(1) + policy(2) + policy(3))
                 l_action = 3;
+            else
+                l_action = 4;
             end
             
             if and(m==M,1)
