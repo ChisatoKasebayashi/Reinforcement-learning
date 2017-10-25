@@ -6,8 +6,6 @@ function next_robot_pos = stepSimulation(current_robot_pos, l_action)
         actions = [-0.1 0];
     elseif(l_action == 3)
         actions = [0 0.1];
-    elseif(l_action == 4)
-        actions = [0 -0.1];
     end
     
     % ˆÚ“®

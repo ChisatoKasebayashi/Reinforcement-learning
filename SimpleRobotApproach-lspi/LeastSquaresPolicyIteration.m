@@ -5,7 +5,7 @@ left = [-0.1 0];
 foward = [0 0.1];
 back = [0,-0.1];
 actions = [right; left; foward; back];          % 行動の候補
-nactions = 4;                             % 行動の数
+nactions = 3;                             % 行動の数
 ganmma = 0.95;                            % 割引率 0.8
 t_epsilon = 0.1;                            % ε-greedyの変数 0.2 小さくなると
 sigma = 0.5;                              % ガウス関数の幅 0.5
@@ -46,7 +46,7 @@ for l=1:L
         robot_pos = [];
         first_robot_pos = [0.6; 0];
         robot_pos = first_robot_pos;
-        first_l_action = 5;
+        first_l_action = 4;
         f_state = getRobotState(goal_pos, first_robot_pos, first_l_action);
         
         % εを徐々に小さくする
@@ -83,10 +83,8 @@ for l=1:L
                 l_action = 1;
             elseif(ran < policy(1) + policy(2))
                 l_action = 2;
-            elseif(ran < policy(1) + policy(2) + policy(3))
-                l_action = 3;
             else
-                l_action = 4;
+                l_action = 3;
             end
             
             if and(m==M,1)
