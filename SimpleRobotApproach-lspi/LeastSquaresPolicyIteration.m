@@ -1,17 +1,16 @@
 function theta = LeastSquaresPolicyIteration(L, M, T, B,center) % L:政策反復 M:エピソード T:ステップ B:ガウス関数の個数
 
-right = [0.1 0];
-left = [-0.1 0];
-foward = [0 0.1];
-back = [0,-0.1];
-actions = [right; left; foward; back];          % 行動の候補
+left = [1/2, sqrt(3)/2, -60];
+foward = [0, 1, 0];
+right = [1/2, sqrt(3)/2, 60];
+actions = [left; foward; right];          % 行動の候補
 nactions = 3;                             % 行動の数
 ganmma = 0.95;                            % 割引率 0.8
-t_epsilon = 0.1;                            % ε-greedyの変数 0.2 小さくなると
+t_epsilon = 0.1;                          % ε-greedyの変数 0.2 小さくなると
 sigma = 0.5;                              % ガウス関数の幅 0.5
 
 %ゴール地点
-goal_pos_x = 0.6;
+goal_pos_x = 0.0;
 goal_pos_y = 1.0;
 
 goal_pos = [goal_pos_x goal_pos_y];
@@ -37,17 +36,19 @@ for l=1:L
     % 標本
     for m=1:M
         
-        %ゴール地点の変更
-        goal_pos_x = round(rand(), 1);
-        goal_pos_y =  round(rand(), 1);
-        goal_pos = [goal_pos_x goal_pos_y];
+        %robotのスタート位置の変更
+        min_x = -0.5;
+        max_x = 0.5;
+        min_y = 0;
+        max_y = 1;
+        
+        robot_pos_x = round((max_x-min_x).*rand()+min_x, 1);
+        robot_pos_y =  round((max_y-min_y).*rand()+min_y, 1);
+        robot_pos = [robot_pos_x, robot_pos_y];
+        robot_theta = 0;
         
         % 一回目のエピソードの初期値
-        robot_pos = [];
-        first_robot_pos = [0.6; 0];
-        robot_pos = first_robot_pos;
-        first_l_action = 4;
-        f_state = getRobotState(goal_pos, first_robot_pos, first_l_action);
+        f_state = getRobotState(goal_pos, robot_pos, robot_theta);
         
         % εを徐々に小さくする
         %t_epsilon = epsilon - m*epsilon/M;
@@ -88,7 +89,7 @@ for l=1:L
             end
             
             if and(m==M,1)
-                plotSimulation(state, robot_pos, goal_pos, actions(l_action),strcat('Policy=',num2str(l),' Episode=',num2str(m)));
+                plotSimulation(state, robot_pos, robot_theta, goal_pos, actions(l_action),strcat('Policy=',num2str(l),' Episode=',num2str(m)));
             end
             
             %行動の実行
@@ -105,7 +106,7 @@ for l=1:L
                 %(M*T)*Bデザイン行列Ｘ, M*T次元ベクトルr
                 x = [(pphi - ganmma * aphi)'];
                 X = [X; x];
-                r = [r,getReward(state)]; 
+                r = [r,getReward(state,goal_pos)]; 
                 if round(state(1),1) == 0 && round(state(2),1) == 0
                     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!');
                     disp('!!!!!!!!!!!GOAL!!!!!!!!!!!');

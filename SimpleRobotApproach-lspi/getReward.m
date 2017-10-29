@@ -1,7 +1,11 @@
-function [reward] = getReward(state)
-
-    reward = -sum(abs(state));
-
+function [reward] = getReward(state, goal_position)
+    
+    dist = sqrt(sum(state.^2));
+    if dist < 0.2
+        reward = -dist;
+    else
+        reward = -1;
+    end
 
 %reward = (max(0, min(dist,1))-1)^2;
 

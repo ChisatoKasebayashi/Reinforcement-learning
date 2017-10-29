@@ -1,4 +1,4 @@
-function stepSimulation(relative_position, robot_position, goal_position, action, Title) % goal_pos,state,actions(action)
+function plotSimulation(relative_position, robot_position, robot_theta, goal_position, action, Title) % goal_pos,state,actions(action)
 
 figure(1);
 clf;
@@ -9,20 +9,33 @@ hold on;
 t = title(Title);
 set(t,'FontSize',16);
 
-xlim([0 1.2]);
-ylim([-0.1 1.2]);
+xlim([-0.8 0.8]);
+ylim([-0.3 1.3]);
 axis square;
-grid on;
 
 % 目的地の描画
-radii = 0.03;
-viscircles(goal_position,radii);
+g_radii = 0.08;
+viscircles(goal_position,g_radii);
 
 % ロボットの描画
-current_position = [transpose(robot_position)-[0.025, 0.025], 0.05, 0.05];
-rectangle('Position',current_position, 'FaceColor', 'k');
+r_radii = 0.03;
+viscircles(robot_position,r_radii,'Color','k');
+if robot_theta == 0
+    x = 0.0;
+    y=robot_position:0.01:robot_position+0.03;
+    plot(x, y, '-','Color', 'k','LineWidth',1.5);
+elseif robot_theta == 60
+    x = robot_position(1):0.01:robot_position(1)+0.03;
+    y = 0.5*sin(deg2rad(robot_theta)) + (robot_position(2)-0.5*sin(deg2rad(robot_theta)))/(robot_position(1)-0.5*cos(deg2rad(robot_theta)))*(x-0.5*cos(deg2rad(robot_theta)));
+    plot(x, y, '-','Color', 'k','LineWidth',1.5);
+else
+    x = robot_position(1)-0.02:0.01:robot_position(1);
+    y = 0.5*sin(deg2rad(robot_theta)) + (robot_position(2)-0.5*sin(deg2rad(robot_theta)))/(robot_position(1)-0.5*cos(deg2rad(robot_theta)))*(x-0.5*cos(deg2rad(robot_theta)));
+    plot(x, y, '-','Color', 'k','LineWidth',1.5);
+end
 
 %saveas(field, 'simpleSim.jpg');
 
+grid on;
 pause(0.2);
 end
