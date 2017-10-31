@@ -1,11 +1,8 @@
-function state = getRobotState(goal_pos, robot_pos, robot_theta)
+function state = getRobotState(goal_pos, robot)
 
     %Å@ëäëŒãóó£ÇÃåvéZ
-    relative_x = goal_pos(1) - robot_pos(1);
-    relative_y = goal_pos(2) - robot_pos(2);
-    
-    theta = rad2deg(atan2(relative_x,relative_y));
-        
+    relative_x = goal_pos(1) - robot(1);
+    relative_y = goal_pos(2) - robot(2);
+    theta = rad2deg(atan2(relative_y,relative_x)) - robot(3);
     state = [relative_x; relative_y; theta];
-
 end

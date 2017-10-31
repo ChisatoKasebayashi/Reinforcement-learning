@@ -1,9 +1,9 @@
 function theta = LeastSquaresPolicyIteration(L, M, T, B,center) % L:政策反復 M:エピソード T:ステップ B:ガウス関数の個数
 
-left = [1/2, sqrt(3)/2, -60];
-foward = [0, 1, 0];
-right = [1/2, sqrt(3)/2, 60];
-actions = [left; foward; right];          % 行動の候補
+left = [0.1*1/2, 0.1*sqrt(3)/2, -30];
+foward = [0, 0.1*1, 0];
+right = [0.1*1/2, 0.1*sqrt(3)/2, 30];
+actions = [-30, 0, 30];          % 行動の候補
 nactions = 3;                             % 行動の数
 ganmma = 0.95;                            % 割引率 0.8
 t_epsilon = 0.1;                          % ε-greedyの変数 0.2 小さくなると
@@ -46,9 +46,10 @@ for l=1:L
         robot_pos_y =  round((max_y-min_y).*rand()+min_y, 1);
         robot_pos = [robot_pos_x, robot_pos_y];
         robot_theta = 0;
+        robot = [robot_pos robot_theta];
         
         % 一回目のエピソードの初期値
-        f_state = getRobotState(goal_pos, robot_pos, robot_theta);
+        f_state = getRobotState(goal_pos, robot);
         
         % εを徐々に小さくする
         %t_epsilon = epsilon - m*epsilon/M;
@@ -89,12 +90,12 @@ for l=1:L
             end
             
             if and(m==M,1)
-                plotSimulation(state, robot_pos, robot_theta, goal_pos, actions(l_action),strcat('Policy=',num2str(l),' Episode=',num2str(m)));
+                plotSimulation(robot ,goal_pos ,strcat('Policy=',num2str(l),' Episode=',num2str(m)));
             end
             
             %行動の実行
-            robot_pos = stepSimulation(robot_pos,l_action);
-            f_state = getRobotState(goal_pos, robot_pos, l_action);
+            robot = stepSimulation(robot, actions(l_action));
+            f_state = getRobotState(goal_pos, robot);
             %---------------------------------------
             if t>1
                 aphi = zeros(B*nactions, 1);
@@ -106,8 +107,8 @@ for l=1:L
                 %(M*T)*Bデザイン行列Ｘ, M*T次元ベクトルr
                 x = [(pphi - ganmma * aphi)'];
                 X = [X; x];
-                r = [r,getReward(state,goal_pos)]; 
-                if round(state(1),1) == 0 && round(state(2),1) == 0
+                r = [r,getReward(state)]; 
+                if abs(getReward(state)) < 0.15
                     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!');
                     disp('!!!!!!!!!!!GOAL!!!!!!!!!!!');
                     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!');
@@ -115,7 +116,7 @@ for l=1:L
                 end
                 
                 if m==M
-                    disp(strcat('Step=',num2str(t),', RobotPos(x,y):(',num2str(robot_pos(1)),', ',num2str(robot_pos(2)),')',', GoalPos(x,y):(',num2str(goal_pos_x),', ',num2str(goal_pos_y),'),', ' Reward=',num2str(r(length(r)))));
+                    disp(strcat('Step=' ,num2str(t) ,'/RobotPos(x,y):(' ,num2str(robot(1)),', ',num2str(robot(2)),')' ,'/GoalPos(x,y):(' ,num2str(goal_pos_x) ,', ' ,num2str(goal_pos_y) ,'),'  ,'/State(x,y):(',num2str(state(1)) ,', ' ,num2str(state(2)),',' ,num2str(state(3)) ,')', '/Reward=',num2str(r(length(r)))));
                     figure(2);
                     hold on;
                     bar(t,r(length(r)));
