@@ -14,15 +14,13 @@ the = deg2rad([-30  0  30]);
 center = [];
 for k=1:length(x)
     for j=1:length(y)
-        for r=1:length(the)
-            c = [x(k), y(j), the(r)];
-            center = [center;c];
-        end
+        c = [x(k), y(j)];
+        center = [center;c];
     end
 end
 
 L = 10;
-M = 200;
+M = 300;
 T = 15;
 B=length(center);
 gamma=0.95;

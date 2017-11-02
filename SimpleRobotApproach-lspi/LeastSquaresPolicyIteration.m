@@ -50,7 +50,7 @@ for l=1:L
         robot_pos_y = 0;
         robot_pos = [robot_pos_x, robot_pos_y];
         robot_theta = deg2rad(90);
-        robot = [robot_pos robot_theta];
+        robot = [robot_pos, robot_theta];
         
         % 一回目のエピソードの初期値
         f_state = getRobotState(goal_pos, robot);
@@ -120,7 +120,7 @@ for l=1:L
                 end
                 
                 if m==M
-                    disp(strcat('Step=' ,num2str(t) ,'/RobotPos(x,y):(' ,num2str(robot(1)),', ',num2str(robot(2)),')' ,'/GoalPos(x,y):(' ,num2str(goal_pos_x) ,', ' ,num2str(goal_pos_y) ,'),'  ,'/State(x,y):(',num2str(state(1)) ,', ' ,num2str(state(2)),',' ,num2str(state(3)) ,')', '/Reward=',num2str(r(length(r)))));
+                    disp(strcat('Step=' ,num2str(t) ,'/RobotPos(x,y):(' ,num2str(robot(1)),', ',num2str(robot(2)),')' ,'/GoalPos(x,y):(' ,num2str(goal_pos_x) ,', ' ,num2str(goal_pos_y) ,'),'  ,'/State(x,y):(',num2str(state(1)) ,', ' ,num2str(state(2)),',' ,num2str(robot(3)) ,')', '/Reward=',num2str(r(length(r)))));
                     figure(2);
                     hold on;
                     bar(t,r(length(r)));
