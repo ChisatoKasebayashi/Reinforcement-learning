@@ -9,7 +9,7 @@ clear figure(3);
 
 x = [-0.5 -0.2 0 0.2 0.5];
 y = [0 0.2 0.5 0.8 1 ];
-the = [-30 -15 0 15 30];
+the = deg2rad([-30  0  30]);
 
 center = [];
 for k=1:length(x)
@@ -22,7 +22,7 @@ for k=1:length(x)
 end
 
 L = 10;
-M = 400;
+M = 200;
 T = 15;
 B=length(center);
 gamma=0.95;

@@ -3,7 +3,7 @@ function theta = LeastSquaresPolicyIteration(L, M, T, B,center) % L:­ô”½•œ M:ƒ
 left = [0.1*1/2, 0.1*sqrt(3)/2, -30];
 foward = [0, 0.1*1, 0];
 right = [0.1*1/2, 0.1*sqrt(3)/2, 30];
-actions = [-30, 0, 30];          % s“®‚ÌŒó•â
+actions = deg2rad([-30, 0, 30]);          % s“®‚ÌŒó•â
 nactions = 3;                             % s“®‚Ì”
 ganmma = 0.95;                            % Š„ˆø—¦ 0.8
 t_epsilon = 0.1;                          % ƒÃ-greedy‚Ì•Ï” 0.2 ¬‚³‚­‚È‚é‚Æ
@@ -14,6 +14,8 @@ goal_pos_x = 0.0;
 goal_pos_y = 1.0;
 
 goal_pos = [goal_pos_x goal_pos_y];
+
+goal_area = 0.15;
 
 % ƒfƒUƒCƒ“s—ñX ƒxƒNƒgƒ‹r‚Ì‰Šú‰»
 X = []; %M*T,3*B
@@ -37,15 +39,17 @@ for l=1:L
     for m=1:M
         
         %robot‚ÌƒXƒ^[ƒgˆÊ’u‚Ì•ÏX
-        min_x = -0.5;
-        max_x = 0.5;
-        min_y = 0;
-        max_y = 1;
+        %min_x = -0.5;
+        %max_x = 0.5;
+        %min_y = 0;
+        %max_y = 0.8;
         
-        robot_pos_x = round((max_x-min_x).*rand()+min_x, 1);
-        robot_pos_y =  round((max_y-min_y).*rand()+min_y, 1);
+        %robot_pos_x = round((max_x-min_x).*rand()+min_x, 1);
+        %robot_pos_y =  round((max_y-min_y).*rand()+min_y, 1);
+        robot_pos_x = 0;
+        robot_pos_y = 0;
         robot_pos = [robot_pos_x, robot_pos_y];
-        robot_theta = 0;
+        robot_theta = deg2rad(90);
         robot = [robot_pos robot_theta];
         
         % ˆê‰ñ–Ú‚ÌƒGƒsƒ\[ƒh‚Ì‰Šú’l
@@ -90,7 +94,7 @@ for l=1:L
             end
             
             if and(m==M,1)
-                plotSimulation(robot ,goal_pos ,strcat('Policy=',num2str(l),' Episode=',num2str(m)));
+                plotSimulation(robot, goal_pos, goal_area, strcat('Policy=',num2str(l),' Episode=',num2str(m)));
             end
             
             %s“®‚ÌÀs
@@ -108,7 +112,7 @@ for l=1:L
                 x = [(pphi - ganmma * aphi)'];
                 X = [X; x];
                 r = [r,getReward(state)]; 
-                if abs(getReward(state)) < 0.15
+                if abs(getReward(state)) < goal_area
                     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!');
                     disp('!!!!!!!!!!!GOAL!!!!!!!!!!!');
                     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!');
