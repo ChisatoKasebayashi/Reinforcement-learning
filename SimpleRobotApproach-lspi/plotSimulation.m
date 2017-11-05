@@ -25,21 +25,6 @@ g_robot = [robot(1) + cos(robot(3)) robot(2) + sin(robot(3))];
 %plot(a([c_robot(1) g_robot(1)],1),a([c_robot(2) g_robot(2)],2),'-')
 line = [c_robot;g_robot];
 plot(line([1,2],1),line([1,2],2),'-','Color','k');
-%{
-if robot(3) == 0
-    x = 0.0;
-    y=robot(1):0.01:robot(1)+0.03;
-    plot(x, y, '-','Color', 'k','LineWidth',1.5);
-elseif robot(3) == 30
-    x = robot(1):0.01:robot(1)+0.03;
-    y = 0.5*sin(deg2rad(robot(3))) + (robot(2)-0.5*sin(deg2rad(robot(3))))/(robot(1)-0.5*cos(deg2rad(robot(3))))*(x-0.5*cos(deg2rad(robot(3))));
-    plot(x, y, '-','Color', 'k','LineWidth',1.5);
-else
-    x = robot(1)-0.02:0.01:robot(1);
-    y = 0.5*sin(deg2rad(robot(3))) + (robot(2)-0.5*sin(deg2rad(robot(3))))/(robot(1)-0.5*cos(deg2rad(robot(3))))*(x-0.5*cos(deg2rad(robot(3))));
-    plot(x, y, '-','Color', 'k','LineWidth',1.5);
-end
-%}
 
 %saveas(field, 'simpleSim.jpg');
 

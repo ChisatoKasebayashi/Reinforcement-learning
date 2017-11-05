@@ -50,10 +50,11 @@ for l=1:L
         robot_pos_y = 0;
         robot_pos = [robot_pos_x, robot_pos_y];
         robot_theta = deg2rad(90);
-        robot = [robot_pos, robot_theta];
+        robot = [robot_pos, robot_theta];                                  %ロボットに関するグローバル座標の値
         
         % 一回目のエピソードの初期値
-        f_state = getRobotState(goal_pos, robot);
+        %f_state = getRobotState(goal_pos, robot);
+        f_state = GlobalPos2LocalPos(goal_pos,robot);
         
         % εを徐々に小さくする
         %t_epsilon = epsilon - m*epsilon/M;
@@ -99,7 +100,8 @@ for l=1:L
             
             %行動の実行
             robot = stepSimulation(robot, actions(l_action));
-            f_state = getRobotState(goal_pos, robot);
+            %f_state = getRobotState(goal_pos, robot);
+            f_state = GlobalPos2LocalPos(goal_pos,robot);
             %---------------------------------------
             if t>1
                 aphi = zeros(B*nactions, 1);
