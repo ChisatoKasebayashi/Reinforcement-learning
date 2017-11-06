@@ -7,7 +7,7 @@ actions = deg2rad([-30, 0, 30]);          % 行動の候補
 nactions = 3;                             % 行動の数
 ganmma = 0.95;                            % 割引率 0.8
 t_epsilon = 0.1;                          % ε-greedyの変数 0.2 小さくなると
-sigma = 0.5;                              % ガウス関数の幅 0.5
+sigma = 1;                              % ガウス関数の幅 0.5
 
 %ゴール地点
 goal_pos_x = 0.0;
@@ -122,7 +122,7 @@ for l=1:L
                 end
                 
                 if m==M
-                    disp(strcat('Step=' ,num2str(t) ,'/RobotPos(x,y):(' ,num2str(robot(1)),', ',num2str(robot(2)),')' ,'/GoalPos(x,y):(' ,num2str(goal_pos_x) ,', ' ,num2str(goal_pos_y) ,'),'  ,'/State(x,y):(',num2str(state(1)) ,', ' ,num2str(state(2)),',' ,num2str(robot(3)) ,')', '/Reward=',num2str(r(length(r)))));
+                    disp(strcat('Step=' ,num2str(t) ,'/RobotPos(x,y):(' ,num2str(robot(1)),', ',num2str(robot(2)),')' ,'/GoalPos(x,y):(' ,num2str(goal_pos_x) ,', ' ,num2str(goal_pos_y) ,'),'  ,'/State(x,y):(',num2str(state(1)) ,', ' ,num2str(state(2)),')', '/Reward=',num2str(r(length(r)))));
                     figure(2);
                     hold on;
                     bar(t,r(length(r)));
