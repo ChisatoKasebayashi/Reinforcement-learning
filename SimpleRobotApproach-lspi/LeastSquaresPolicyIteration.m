@@ -96,6 +96,7 @@ for l=1:L
             
             if and(m==M,1)
                 plotSimulation(robot, goal_pos, goal_area, strcat('Policy=',num2str(l),' Episode=',num2str(m)));
+                dplotSimulation(robot, state, goal_area, strcat('Policy=',num2str(l),' Episode=',num2str(m)));
             end
             
             %çsìÆÇÃé¿çs
@@ -122,7 +123,7 @@ for l=1:L
                 end
                 
                 if m==M
-                    disp(strcat('Step=' ,num2str(t) ,'/RobotPos(x,y):(' ,num2str(robot(1)),', ',num2str(robot(2)),')' ,'/GoalPos(x,y):(' ,num2str(goal_pos_x) ,', ' ,num2str(goal_pos_y) ,'),'  ,'/State(x,y):(',num2str(state(1)) ,', ' ,num2str(state(2)),')', '/Reward=',num2str(r(length(r)))));
+                    disp(strcat('Step=' ,num2str(t) ,'/NextAction:' ,num2str(rad2deg(actions(l_action))) ,'/RobotPos(x,y):(' ,num2str(robot(1)),', ',num2str(robot(2)),')' ,'/GoalPos(x,y):(' ,num2str(goal_pos_x) ,', ' ,num2str(goal_pos_y) ,'),'  ,'/State(x,y):(',num2str(state(1)) ,', ' ,num2str(state(2)),')', '/Reward=',num2str(r(length(r)))));
                     figure(2);
                     hold on;
                     bar(t,r(length(r)));
