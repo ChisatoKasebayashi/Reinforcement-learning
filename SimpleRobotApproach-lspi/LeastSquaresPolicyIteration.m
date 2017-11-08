@@ -3,19 +3,19 @@ function theta = LeastSquaresPolicyIteration(L, M, T, B,center) % L:­ô”½•œ M:ƒ
 left = [0.1*1/2, 0.1*sqrt(3)/2, -30];
 foward = [0, 0.1*1, 0];
 right = [0.1*1/2, 0.1*sqrt(3)/2, 30];
-actions = deg2rad([-30, 0, 30]);          % s“®‚ÌŒó•â
-nactions = 3;                             % s“®‚Ì”
+actions = deg2rad([-30, 0, 30, 5]);          % s“®‚ÌŒó•â
+nactions = length(actions);                             % s“®‚Ì”
 ganmma = 0.95;                            % Š„ˆø—¦ 0.8
 t_epsilon = 0.1;                          % ƒÃ-greedy‚Ì•Ï” 0.2 ¬‚³‚­‚È‚é‚Æ
 sigma = 1;                              % ƒKƒEƒXŠÖ”‚Ì• 0.5
 
-%ƒS[ƒ‹’n“_
+%ƒS[ƒ‹
 goal_pos_x = 0.0;
 goal_pos_y = 1.0;
+goal_area = 0.15;
+goal_direction = deg2rad(35);
 
 goal_pos = [goal_pos_x goal_pos_y];
-
-goal_area = 0.15;
 
 % ƒfƒUƒCƒ“s—ñX ƒxƒNƒgƒ‹r‚Ì‰Šú‰»
 X = []; %M*T,3*B
@@ -90,13 +90,15 @@ for l=1:L
                 l_action = 1;
             elseif(ran < policy(1) + policy(2))
                 l_action = 2;
-            else
+            elseif(ran < policy(1) + policy(2) + policy(3))
                 l_action = 3;
+            else
+                l_action = 4;
             end
             
             if and(m==M,1)
-                plotSimulation(robot, goal_pos, goal_area, strcat('Policy=',num2str(l),' Episode=',num2str(m)));
-                dplotSimulation(robot, state, goal_area, strcat('Policy=',num2str(l),' Episode=',num2str(m)));
+                plotSimulation(robot, goal_pos, goal_area, goal_direction, strcat('Policy=',num2str(l),' Episode=',num2str(m)));
+                %dplotSimulation(robot, state, goal_area, strcat('Policy=',num2str(l),' Episode=',num2str(m)));
             end
             
             %s“®‚ÌÀs
@@ -116,9 +118,9 @@ for l=1:L
                 X = [X; x];
                 r = [r,getReward(state)]; 
                 if abs(getReward(state)) < goal_area
-                    disp('!!!!!!!!!!!!!!!!!!!!!!!!!!');
-                    disp('!!!!!!!!!!!GOAL!!!!!!!!!!!');
-                    disp('!!!!!!!!!!!!!!!!!!!!!!!!!!');
+                    %disp('!!!!!!!!!!!!!!!!!!!!!!!!!!');
+                    %disp('!!!!!!!!!!!GOAL!!!!!!!!!!!');
+                    %disp('!!!!!!!!!!!!!!!!!!!!!!!!!!');
                     break;
                 end
                 
