@@ -16,6 +16,7 @@ goal_area = 0.15;
 goal_direction = deg2rad(35);
 
 goal_pos = [goal_pos_x goal_pos_y];
+goal = [goal_pos goal_direction];
 
 % デザイン行列X ベクトルrの初期化
 X = []; %M*T,3*B
@@ -54,7 +55,7 @@ for l=1:L
         
         % 一回目のエピソードの初期値
         %f_state = getRobotState(goal_pos, robot);
-        f_state = GlobalPos2LocalPos(goal_pos,robot);
+        f_state = GlobalPos2LocalPos(goal,robot);
         
         % εを徐々に小さくする
         %t_epsilon = epsilon - m*epsilon/M;
@@ -97,12 +98,12 @@ for l=1:L
             end
             
             if and(m==M,1)
-                plotSimulation(robot, goal_pos, goal_area, goal_direction, strcat('Policy=',num2str(l),' Episode=',num2str(m)));
+                plotSimulation(robot, goal, goal_area, strcat('Policy=',num2str(l),' Episode=',num2str(m)));
                 %dplotSimulation(robot, state, goal_area, strcat('Policy=',num2str(l),' Episode=',num2str(m)));
             end
             
             %行動の実行
-            robot = stepSimulation(robot, actions(l_action));
+            robot = stepSimulation(robot, actions(l_action), l_action);
             %f_state = getRobotState(goal_pos, robot);
             f_state = GlobalPos2LocalPos(goal_pos,robot);
             %---------------------------------------

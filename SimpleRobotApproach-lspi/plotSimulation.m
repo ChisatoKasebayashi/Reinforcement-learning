@@ -1,4 +1,4 @@
-function plotSimulation(robot, goal_position, goal_area, goal_direction, Title) % goal_pos,state,actions(action)
+function plotSimulation(robot, goal, goal_area, Title) % goal_pos,state,actions(action)
 
 figure(1);
 clf;
@@ -15,9 +15,9 @@ axis square;
 
 % –Ú“I’n‚Ì•`‰æ
 g_radii = goal_area;
-viscircles(goal_position,g_radii);
-c_goal = [goal_position(1) goal_position(2)];
-g_goal = [goal_position(1) + cos(goal_direction) goal_position(2) + sin(goal_direction)];
+viscircles([goal(1) goal(2)],g_radii);
+c_goal = [goal(1) goal(2)];
+g_goal = [goal(1) + cos(goal(3)) goal(2) + sin(goal(3))];
 line_goal = [c_goal;g_goal];
 plot(line_goal([1,2],1),line_goal([1,2],2),'-','Color','r');
 
