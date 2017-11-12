@@ -105,7 +105,7 @@ for l=1:L
             %行動の実行
             robot = stepSimulation(robot, actions(l_action), l_action);
             %f_state = getRobotState(goal_pos, robot);
-            f_state = GlobalPos2LocalPos(goal_pos,robot);
+            f_state = GlobalPos2LocalPos(goal,robot);
             %---------------------------------------
             if t>1
                 aphi = zeros(B*nactions, 1);
@@ -117,8 +117,8 @@ for l=1:L
                 %(M*T)*Bデザイン行列Ｘ, M*T次元ベクトルr
                 x = [(pphi - ganmma * aphi)'];
                 X = [X; x];
-                r = [r,getReward(state)]; 
-                if abs(getReward(state)) < goal_area
+                r = [r,getReward(state, robot, goal)]; 
+                if abs(getReward(state, robot, goal)) < goal_area && (robot(3) == goal(3))
                     %disp('!!!!!!!!!!!!!!!!!!!!!!!!!!');
                     %disp('!!!!!!!!!!!GOAL!!!!!!!!!!!');
                     %disp('!!!!!!!!!!!!!!!!!!!!!!!!!!');
@@ -127,6 +127,7 @@ for l=1:L
                 
                 if m==M
                     disp(strcat('Step=' ,num2str(t) ,'/NextAction:' ,num2str(rad2deg(actions(l_action))) ,'/RobotPos(x,y):(' ,num2str(robot(1)),', ',num2str(robot(2)),')' ,'/GoalPos(x,y):(' ,num2str(goal_pos_x) ,', ' ,num2str(goal_pos_y) ,'),'  ,'/State(x,y):(',num2str(state(1)) ,', ' ,num2str(state(2)),')', '/Reward=',num2str(r(length(r)))));
+                    disp(strcat('goal(3)=',num2str(rad2deg(goal(3))),'/robot(3)=',num2str(rad2deg(robot(3))),'/goal-robot=',num2str(rad2deg(goal(3)-robot(3)))));
                     figure(2);
                     hold on;
                     bar(t,r(length(r)));
