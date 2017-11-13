@@ -19,8 +19,8 @@ for k=1:length(x)
 end
 
 L = 10;
-M = 300;
-T = 15;
+M = 400;
+T = 20;
 B=length(center);
 gamma=0.95;
 sigma = 0.5;

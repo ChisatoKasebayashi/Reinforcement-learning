@@ -56,9 +56,6 @@ for l=1:L
         %f_state = getRobotState(goal_pos, robot);
         f_state = GlobalPos2LocalPos(goal,robot);
         
-        % ƒÃ‚ğ™X‚É¬‚³‚­‚·‚é
-        t_epsilon = epsilon - m*epsilon/M;
-
         
         for t=1:T
             state = f_state;
@@ -158,9 +155,9 @@ for l=1:L
     % •½‹Ï•ñV‚ªˆê”Ô‚‚©‚Á‚½theta‚ğ•Û‘¶‚µ‚Ä‚¨‚­
     if mean(r) > pmean_r
         best_theta = theta;
-        disp('#############################');
+        %disp('#############################');
     end
-    disp(strcat('[meanR]=',num2str(mean(r)), ' [pmeanR]=',num2str(pmean_r)));
+    %disp(strcat('[meanR]=',num2str(mean(r)), ' [pmeanR]=',num2str(pmean_r)));
     pmean_r = mean(r);
     
     if l==L 
