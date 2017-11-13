@@ -18,11 +18,16 @@ for k=1:length(x)
     end
 end
 
-L = 20;
+L = 10;
 M = 300;
 T = 15;
 B=length(center);
 gamma=0.95;
 sigma = 0.5;
 
+% TRAINフェーズ
 theta=LeastSquaresPolicyIteration(L,M,T,B,center);
+
+test_epsilon = 0.000001;
+% TESTフェーズ
+robotApproach(T,B,theta,test_epsilon,center);

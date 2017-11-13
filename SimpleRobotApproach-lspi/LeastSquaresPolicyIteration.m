@@ -3,10 +3,10 @@ function theta = LeastSquaresPolicyIteration(L, M, T, B,center) % L:­ô”½•œ M:ƒ
 left = [0.1*1/2, 0.1*sqrt(3)/2, -30];
 foward = [0, 0.1*1, 0];
 right = [0.1*1/2, 0.1*sqrt(3)/2, 30];
-actions = deg2rad([-30, 0, 30, 5]);          % s“®‚ÌŒó•â
+actions = deg2rad([-30, 0, 30, 5, -5]);          % s“®‚ÌŒó•â
 nactions = length(actions);                             % s“®‚Ì”
 ganmma = 0.95;                            % Š„ˆø—¦ 0.8
-t_epsilon = 0.1;                          % ƒÃ-greedy‚Ì•Ï” 0.2 ¬‚³‚­‚È‚é‚Æ
+epsilon = 0.1;                          % ƒÃ-greedy‚Ì•Ï” 0.2 ¬‚³‚­‚È‚é‚Æ
 sigma = 1;                              % ƒKƒEƒXŠÖ”‚Ì• 0.5
 
 %ƒS[ƒ‹
@@ -14,15 +14,14 @@ goal_pos_x = 0.0;
 goal_pos_y = 1.0;
 goal_area = 0.15;
 goal_direction = deg2rad(35);
-
 goal_pos = [goal_pos_x goal_pos_y];
 goal = [goal_pos goal_direction];
 
 % ƒfƒUƒCƒ“s—ñX ƒxƒNƒgƒ‹r‚Ì‰Šú‰»
 X = []; %M*T,3*B
-count = [];
 
-
+best_theta = zeros(B*nactions, 1);
+pmean_r = -2;
 % ƒ‚ƒfƒ‹ƒpƒ‰ƒ[ƒ^‚Ì‰Šú‰»
 theta = zeros(B*nactions, 1);
 
@@ -58,7 +57,7 @@ for l=1:L
         f_state = GlobalPos2LocalPos(goal,robot);
         
         % ƒÃ‚ğ™X‚É¬‚³‚­‚·‚é
-        %t_epsilon = epsilon - m*epsilon/M;
+        t_epsilon = epsilon - m*epsilon/M;
 
         
         for t=1:T
@@ -93,8 +92,10 @@ for l=1:L
                 l_action = 2;
             elseif(ran < policy(1) + policy(2) + policy(3))
                 l_action = 3;
-            else
+            elseif(ran < policy(1) + policy(2) + policy(3) + policy(4))
                 l_action = 4;
+            else
+                l_action = 5;
             end
             
             if and(m==M,1)
@@ -153,6 +154,18 @@ for l=1:L
     MaxR=[MaxR max(r)];
     AvgR=[AvgR mean(r)];
     Dsum=[Dsum dr/M];
+    
+    % •½‹Ï•ñV‚ªˆê”Ô‚‚©‚Á‚½theta‚ğ•Û‘¶‚µ‚Ä‚¨‚­
+    if mean(r) > pmean_r
+        best_theta = theta;
+        disp('#############################');
+    end
+    disp(strcat('[meanR]=',num2str(mean(r)), ' [pmeanR]=',num2str(pmean_r)));
+    pmean_r = mean(r);
+    
+    if l==L 
+        theta = best_theta;
+    end
 end
 figure(4);
 subplot(3,1,1)
