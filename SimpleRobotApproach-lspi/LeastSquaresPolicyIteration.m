@@ -155,10 +155,11 @@ for l=1:L
     % •½‹Ï•ñV‚ªˆê”Ô‚‚©‚Á‚½theta‚ğ•Û‘¶‚µ‚Ä‚¨‚­
     if mean(r) > pmean_r
         best_theta = theta;
+        pmean_r = mean(r);
         %disp('#############################');
     end
     %disp(strcat('[meanR]=',num2str(mean(r)), ' [pmeanR]=',num2str(pmean_r)));
-    pmean_r = mean(r);
+    
     
     if l==L 
         theta = best_theta;
