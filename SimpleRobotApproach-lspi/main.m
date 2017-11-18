@@ -20,7 +20,7 @@ end
 
 L = 10;
 M = 400;
-T = 20;
+T = 15;
 B=length(center);
 gamma=0.95;
 sigma = 0.5;
