@@ -94,12 +94,7 @@ for l=1:L
             else
                 l_action = 5;
             end
-            
-            if and(m==M,1)
-                plotSimulation(robot, goal, goal_area, strcat('Policy=',num2str(l),' Episode=',num2str(m)));
-                %dplotSimulation(robot, state, goal_area, strcat('Policy=',num2str(l),' Episode=',num2str(m)));
-            end
-            
+                        
             %çsìÆÇÃé¿çs
             robot = stepSimulation(robot, actions(l_action), l_action);
             %f_state = getRobotState(goal_pos, robot);
@@ -122,27 +117,39 @@ for l=1:L
                     %disp('!!!!!!!!!!!!!!!!!!!!!!!!!!');
                     break;
                 end
-                
-                if m==M
-                    disp(strcat('Step=' ,num2str(t) ,'/NextAction:' ,num2str(rad2deg(actions(l_action))) ,'/RobotPos(x,y):(' ,num2str(robot(1)),', ',num2str(robot(2)),')' ,'/GoalPos(x,y):(' ,num2str(goal_pos_x) ,', ' ,num2str(goal_pos_y) ,'),'  ,'/State(x,y):(',num2str(state(1)) ,', ' ,num2str(state(2)),')', '/Reward=',num2str(r(length(r)))));
-                    disp(strcat('goal(3)=',num2str(rad2deg(goal(3))),'/robot(3)=',num2str(rad2deg(robot(3))),'/goal-robot=',num2str(rad2deg(goal(3)-robot(3)))));
-                    figure(2);
-                    hold on;
-                    bar(t,r(length(r)));
-                    xlim([0 T]);
-                    pause(0.1);
-                    if t==T
-                        clf(figure(2));
-                    end
-                end
                 %dr = dr + r *ganmma ^(t-1);
             end
             paction = l_action;
             pstate = state;
-       
+            
+            if m==M
+                disp(strcat('Step=' ,num2str(t) ,'/NextAction:' ,num2str(rad2deg(actions(l_action))) ,'/RobotPos(x,y):(' ,num2str(robot(1)),', ',num2str(robot(2)),')' ,'/GoalPos(x,y):(' ,num2str(goal_pos_x) ,', ' ,num2str(goal_pos_y) ,'),'  ,'/State(x,y):(',num2str(state(1)) ,', ' ,num2str(state(2)),')', '/Reward=',num2str(r(length(r)))));
+            end
+            
             if and(t==T,m==M)
                 disp('*************EPISODE*************');
             end
+            
+            % èÛë‘ÇÃï`âÊ
+            plot_f = and(m==M,1);
+            if plot_f
+                plotSimulation(robot, goal, goal_area, strcat('Policy=',num2str(l),' Episode=',num2str(m)));
+                %dplotSimulation(robot, state, goal_area, strcat('Policy=',num2str(l),' Episode=',num2str(m)));
+                figure(2);
+                if t==1
+                    clf;
+                    disp('1:');
+                    disp(length(r));
+                else
+                    hold on;
+                    disp(length(r));
+                    bar(t,r(length(r)));
+                    text(t,r(length(r))-0.01,strcat(num2str(rad2deg(robot(3))),'Åã'));
+                    xlim([0 T]);
+                    pause(1);
+                end
+            end
+
         end
     end
     
