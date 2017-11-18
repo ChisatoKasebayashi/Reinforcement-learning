@@ -18,7 +18,7 @@ for k=1:length(x)
     end
 end
 
-L = 10;
+L = 20;
 M = 400;
 T = 15;
 B=length(center);
