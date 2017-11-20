@@ -117,7 +117,6 @@ for l=1:L
                     %disp('!!!!!!!!!!!!!!!!!!!!!!!!!!');
                     break;
                 end
-                %dr = dr + r *ganmma ^(t-1);
             end
             paction = l_action;
             pstate = state;
@@ -138,11 +137,8 @@ for l=1:L
                 figure(2);
                 if t==1
                     clf;
-                    disp('1:');
-                    disp(length(r));
                 else
                     hold on;
-                    disp(length(r));
                     bar(t,r(length(r)));
                     text(t,r(length(r))-0.01,strcat(num2str(rad2deg(robot(3))),'‹'));
                     xlim([0 T]);
@@ -162,9 +158,7 @@ for l=1:L
     % •½‹Ï•ñV‚ªˆê”Ô‚‚©‚Á‚½theta‚ğ•Û‘¶‚µ‚Ä‚¨‚­
     if mean(r) > pmean_r
         best_theta = theta;
-        %disp('#############################');
     end
-    %disp(strcat('[meanR]=',num2str(mean(r)), ' [pmeanR]=',num2str(pmean_r)));
     pmean_r = mean(r);
     
     if l==L 
