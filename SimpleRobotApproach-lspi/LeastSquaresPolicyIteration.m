@@ -13,7 +13,7 @@ sigma = 1;                              % ÉKÉEÉXä÷êîÇÃïù 0.5
 goal_pos_x = 0.0;
 goal_pos_y = 1.0;
 goal_area = 0.15;
-goal_direction = deg2rad(35);
+goal_direction = deg2rad(65);
 goal_pos = [goal_pos_x goal_pos_y];
 goal = [goal_pos goal_direction];
 
