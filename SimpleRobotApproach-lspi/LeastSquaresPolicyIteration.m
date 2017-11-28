@@ -77,9 +77,8 @@ for l=1:L
             
             % É√greedy
             [v, a] = max(Q);
-            t_epsilon = 1 - l*0.09;
-            policy = ones(nactions, 1)*t_epsilon/nactions;
-            policy(a) = 1-t_epsilon+t_epsilon / nactions;
+            policy = ones(nactions, 1)*epsilon/nactions;
+            policy(a) = 1-epsilon+epsilon / nactions;
             
             %çsìÆëIë
             ran = rand;
@@ -142,7 +141,7 @@ for l=1:L
                     bar(t,r(length(r)));
                     text(t,r(length(r))-0.01,strcat(num2str(rad2deg(robot(3))),'Åã'));
                     xlim([0 T]);
-                    pause(1);
+                    pause(0.1);
                 end
             end
 
