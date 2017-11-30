@@ -41,11 +41,13 @@ for l=1:L
             action = min(action, MaxAng);
             action = max(action, MinAng);
             
+            robotang = stepSimulation(state, action);
+            state = getRobotState(goalpos, robotpos, robotang);
             %行動の実行
             if( and(m==M,1) )
-                state = stepSimulation(state, action);
+                plotSimulation(goalpos, robotpos, robotang, strcat('Policy=',num2str(l),' Episode=',num2str(m)));
             end
-            plotSimulation(goalpos, robotpos, robotang,strcat('Policy=',num2str(l),' Episode=',num2str(m)));
+            
             
             %平均muに関する勾配の計算
             der(m, 1:N-1) = der(m, 1:N-1) + ((action - mu'*state)*state/(sigma.^2))';
