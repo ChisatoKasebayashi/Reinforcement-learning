@@ -1,3 +1,3 @@
 function reward = getReward(state)
-reward = -state;
+reward = -abs(state);
 end
