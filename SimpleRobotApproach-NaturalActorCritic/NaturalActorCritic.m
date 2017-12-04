@@ -1,4 +1,4 @@
-function [sigma, mu] = NaturalActorCritic(L, M, T, N, ganma, alpha)
+function [sigma, mu] = NaturalActorCritic(L, M, T, N, gamma, alpha)
 robotpos = [0, 0];                                             %シミュレータの初期値
 MaxAng = deg2rad(180);
 MinAng = deg2rad(0);
