@@ -48,7 +48,6 @@ for l=1:L
             
             %行動の実行
             robotang = stepSimulation(state, action);
-            state = getRobotState(goalpos, robotpos, robotang);
             
             %平均muに関する勾配の計算
             der(m, 1:N-1) = der(m, 1:N-1) + ((action - mu'*state)*state/(sigma.^2))';
