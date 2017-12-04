@@ -5,7 +5,7 @@ MinAng = deg2rad(0);
 
 
 mu = rand(N-1, 1)-0.5;
-sigma = rand*10;
+sigma = rand*L;
 
 MaxR=[];
 AvgR=[];
@@ -46,6 +46,7 @@ for l=1:L
             action = min(action, MaxAng);
             action = max(action, MinAng);
             
+            %行動の実行
             robotang = stepSimulation(state, action);
             state = getRobotState(goalpos, robotpos, robotang);
             
@@ -59,7 +60,7 @@ for l=1:L
             rewards(m, t) = getReward(state);
             drs(m) = drs(m) + gamma^(t-1)*rewards(m, t);
             dr = dr + gamma^(t-1)*rewards(m, t);
-            %行動の実行
+    
             if( and(m==M,1) )
                 plotSimulation(goalpos, robotpos, robotang, strcat('Policy=',num2str(l),' Episode=',num2str(m)));
                 figure(2);
@@ -75,10 +76,10 @@ for l=1:L
             if( and(m==M,1) )
                 figure(3);
                 x = linspace(-3.14,3.14);
-                plot(x,exp(-(x-mu).^2/2*sigma.^2))
+                plot(x,(1/sqrt(2*pi)*sigma)*exp(-(x-mu).^2/2*sigma.^2))
             end
         end
-    end
+    en1d
     
     %最小分散ベースラインを計算
     b = drs * diag(der*der') / trace(der*der');
