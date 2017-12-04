@@ -1,12 +1,13 @@
 function state = getRobotState(goal_pos, robot_pos, robotang)
 
 %@Šp“x‚Ì·‚ÌŒvŽZ
-angle_d = goal_pos - robot_pos;
-theta = atan2(angle_d(2),angle_d(1));
-if theta > pi
-    theta = theta - 2*pi;
-elseif theta < -pi
-    theta = theta + 2*pi;
+theta_g = atan2(goal_pos(2),goal_pos(1));
+
+angle_d = theta_g - robotang;
+if angle_d > pi
+    angle_d = angle_d - 2*pi;
+elseif angle_d < -pi
+    angle_d = angle_d + 2*pi;
 end
-state = [theta - robotang];
+state = angle_d;
 end

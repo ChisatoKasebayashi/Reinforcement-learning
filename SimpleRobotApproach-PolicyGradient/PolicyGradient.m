@@ -60,7 +60,7 @@ for l=1:L
             drs(m) = drs(m) + gamma^(t-1)*rewards(m, t);
             dr = dr + gamma^(t-1)*rewards(m, t);
             %çsìÆÇÃé¿çs
-            if( and(m==M,l==L) )
+            if( and(m==M,1) )
                 plotSimulation(goalpos, robotpos, robotang, strcat('Policy=',num2str(l),' Episode=',num2str(m)));
                 figure(2);
                 if t==1
@@ -71,6 +71,11 @@ for l=1:L
                     xlim([0 T]);
                     pause(0.1);
                 end
+            end
+            if( and(m==M,1) )
+                figure(3);
+                x = linspace(-3.14,3.14);
+                plot(x,exp(-(x-mu).^2/2*sigma.^2))
             end
         end
     end
