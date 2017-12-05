@@ -1,5 +1,5 @@
 function [sigma, mu] = PolicyGradient(L, M, T, N, gamma, alpha)
-World.Robot.pos = [0, 0];
+World.Agent.pos = [0, 0];
 MaxAng = pi/2;
 MinAng = -(pi/2);
 
@@ -38,7 +38,7 @@ for l=1:L
             drs(m) = drs(m) + gamma^(t-1)*rewards(m, t);
             dr = dr + gamma^(t-1)*rewards(m, t);
             if( and(m==M,1) )
-                plotSimulation(World.Goal.pos, World.Robot.pos,World.Agent.angle , strcat('Policy=',num2str(l),' Episode=',num2str(m)));
+                plotSimulation(World.Goal.pos, World.Agent.pos,World.Agent.angle , strcat('Policy=',num2str(l),' Episode=',num2str(m)));
                 if t>1
                     figure(2);
                     hold on;
