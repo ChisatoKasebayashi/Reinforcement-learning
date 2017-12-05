@@ -1,3 +1,3 @@
-function next_robot_direction = stepSimulation(current_angle_difference, action)
-next_robot_direction = action;
+function next_state = stepSimulation(current_state, action)
+next_state = current_state + action;
 end
