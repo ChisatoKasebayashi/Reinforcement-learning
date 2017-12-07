@@ -3,19 +3,20 @@ World.Agent.pos = [0, 0];
 MaxAng = pi/2;
 MinAng = -(pi/2);
 
-mu = pi/2;%and(N-1, 1);
-sigma = pi/10; %rand* 10;
+mu = rand(N-1, 1);
+sigma = rand;
 
 MaxR=[];
 AvgR=[];
 Dsum=[];
 
+
 figure(1);clf;
-movegui(figure(1),'west')
+
 figure(2);clf;
-movegui(figure(2),'center')
+%movegui(figure(2),'center')
 figure(3);clf;
-movegui(figure(3),'east')
+%movegui(figure(3),'east')
 figure(4);clf;
 
 for l=1:L
@@ -24,7 +25,7 @@ for l=1:L
         drs(m) = 0;
         der(m, :) = zeros(1,N);
         World.Goal.pos = [0, 0.8];
-        World.Agent.angle = deg2rad(-90);
+        World.Agent.angle = deg2rad(90*randn-90);
         for t=1:T
             state = zeros(N-1,1);
             state = getRobotState(atan2(World.Goal.pos(2),World.Goal.pos(1)),World.Agent.angle);
@@ -78,7 +79,6 @@ plot(1:L,MaxR)
 title('max reward');
 subplot(3,1,2)
 plot(1:L,AvgR)
-ylim([-1.8 -1])
 title('average');
 subplot(3,1,3)
 plot(1:L,Dsum)
