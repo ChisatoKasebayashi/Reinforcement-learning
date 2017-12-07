@@ -13,9 +13,9 @@ xlim([-0.8 0.8]);
 ylim([-0.3 1.3]);
 axis square;
 
-% �ړI�n�̕`��
+
 viscircles([goalpos(1) goalpos(2)],0.03);
-%text(goal(1)+0.1,goal(2),strcat(num2str(rad2deg(goal(3))),'��'));
+%text(goal(1)+0.1,goal(2),strcat(num2str(rad2deg(goal(3))),'[deg]'));
 %c_goal = [goal(1) goal(2)];
 %g_goal = [goal(1) + cos(goal(3)) goal(2) + sin(goal(3))];
 %line_goal = [c_goal;g_goal];
@@ -23,7 +23,6 @@ viscircles([goalpos(1) goalpos(2)],0.03);
 
 relative_ang = getRobotState(atan2(goalpos(2),goalpos(1)),robotangle);
 
-% ���{�b�g�̕`��
 r_radii = 0.04;
 viscircles([robotpos(1) robotpos(2)],r_radii,'Color','k');
 text(robotpos(1)+0.1,robotpos(2),strcat(num2str(rad2deg(relative_ang)),'[deg]'));
