@@ -1,7 +1,7 @@
 function [sigma, mu] = PolicyGradient(L, M, T, N, gamma, alpha)
 World.Agent.pos = [0, 0];
-MaxAng = pi/2;
-MinAng = -(pi/2);
+MaxAng = pi/6;
+MinAng = -(pi/6);
 
 mu = rand(N-1, 1);
 sigma = rand;
@@ -25,7 +25,7 @@ for l=1:L
         drs(m) = 0;
         der(m, :) = zeros(1,N);
         World.Goal.pos = [0, 0.8];
-        World.Agent.angle = deg2rad(90*randn-90);
+        World.Agent.angle = deg2rad(360*rand);
         for t=1:T
             state = zeros(N-1,1);
             state = getRobotState(atan2(World.Goal.pos(2),World.Goal.pos(1)),World.Agent.angle);
@@ -39,6 +39,7 @@ for l=1:L
             drs(m) = drs(m) + gamma^(t-1)*rewards(m, t);
             dr = dr + gamma^(t-1)*rewards(m, t);
             if( and(m==M,1) )
+                disp(World);
                 plotSimulation(World.Goal.pos, World.Agent.pos,World.Agent.angle , strcat('Policy=',num2str(l),' Episode=',num2str(m)));
                 if t>1
                     figure(2);
