@@ -16,8 +16,8 @@ figure(1);clf;
 movegui(figure(2),'west')
 figure(2);clf;
 movegui(figure(2),'center')
-figure(3);clf;
-movegui(figure(3),'east')
+%figure(3);clf;
+%movegui(figure(3),'east')
 figure(4);clf;
 
 for l=1:L
@@ -34,8 +34,10 @@ for l=1:L
             action = randn*sigma + mu'*state;
             action = min(action, MaxAng);
             action = max(action, MinAng);
+            %disp(strcat('robot:',num2str(Global.Robot.pos),'/angle:',num2str(Global.Robot.angle)));
             % stepSim
             [Global.Robot.angle Global.Robot.pos] = setWorldState(Global.Robot.pos,Global.Robot.angle, action, step);
+            %disp(strcat('----------','robot:',num2str(Global.Robot.pos),'/angle:',num2str(Global.Robot.angle)));
             der(m, 1:N-1) = der(m, 1:N-1) + ((action - mu'*state)*state/(sigma.^2))';
             der(m, N) = der(m, N) + ((action-mu'*state).^2-sigma.^2)/(sigma.^3);
             rewards(m, t) = getReward(state);
