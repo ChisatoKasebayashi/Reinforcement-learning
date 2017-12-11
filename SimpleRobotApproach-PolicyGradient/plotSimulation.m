@@ -1,4 +1,4 @@
-function plotSimulation(goalpos, robotpos, robotangle, Title) % goal_pos,robotangle,actions(action)
+function plotSimulation(goalpos, robotpos, robotangle, goal_area, Title) % goal_pos,robotangle,actions(action)
 
 figure(1);
 clf;
@@ -14,7 +14,7 @@ ylim([-0.3 1.3]);
 axis square;
 
 
-viscircles([goalpos(1) goalpos(2)],0.03);
+viscircles([goalpos(1) goalpos(2)], goal_area);
 relative_ang = getRobotState(atan2(goalpos(2),goalpos(1)),robotangle);
 
 r_radii = 0.04;
