@@ -35,5 +35,5 @@ plot(line_robot([1,2],1),line_robot([1,2],2),'-','Color','k');
 %saveas(field, 'simpleSim.jpg');
 
 grid on;
-pause(0.2);
+pause(0.1);
 end
