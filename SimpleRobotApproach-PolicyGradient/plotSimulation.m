@@ -15,12 +15,6 @@ axis square;
 
 
 viscircles([goalpos(1) goalpos(2)],0.03);
-%text(goal(1)+0.1,goal(2),strcat(num2str(rad2deg(goal(3))),'[deg]'));
-%c_goal = [goal(1) goal(2)];
-%g_goal = [goal(1) + cos(goal(3)) goal(2) + sin(goal(3))];
-%line_goal = [c_goal;g_goal];
-%plot(line_goal([1,2],1),line_goal([1,2],2),'-','Color','r');
-
 relative_ang = getRobotState(atan2(goalpos(2),goalpos(1)),robotangle);
 
 r_radii = 0.04;
@@ -35,5 +29,5 @@ plot(line_robot([1,2],1),line_robot([1,2],2),'-','Color','k');
 %saveas(field, 'simpleSim.jpg');
 
 grid on;
-pause(0.2);
+pause(0.3);
 end

@@ -1,7 +1,6 @@
 function [sigma, mu] = PolicyGradient(L, M, T, N, gamma, alpha)
-Global.Robot.pos = [0, 0];
-MaxAng = pi/2;
-MinAng = -(pi/2);
+MaxAng = pi/6;
+MinAng = -(pi/6);
 
 step = 0.1;
 
@@ -26,17 +25,18 @@ for l=1:L
         drs(m) = 0;
         der(m, :) = zeros(1,N);
         Global.Goal.pos = [0, 0.8];
+        Global.Robot.pos = [0, 0];
         Global.Robot.angle = deg2rad(90*randn-90);
+        f_state =GlobalPos2LocalPos(Global.Goal.pos, Global.Robot.pos, Global.Robot.angle);
         for t=1:T
-            state = zeros(N-1,1);
-            %get state
-            state =GlobalPos2LocalPos(Global.Goal.pos, Global.Robot.pos, Global.Robot.angle);
+            state = f_state;
+            
             action = randn*sigma + mu'*state;
             action = min(action, MaxAng);
             action = max(action, MinAng);
-            %disp(strcat('robot:',num2str(Global.Robot.pos),'/angle:',num2str(Global.Robot.angle)));
-            % stepSim
-            [Global.Robot.angle Global.Robot.pos] = setWorldState(Global.Robot.pos,Global.Robot.angle, action, step);
+            %disp(strcat('robot:',num2str(Global.Robot.pos(1)),',',num2str(Global.Robot.pos(2)),'/angle:',num2str(Global.Robot.angle)));
+            [Global.Robot.angle Global.Robot.pos] = stepWorldState(Global.Robot.pos,Global.Robot.angle, action, step);
+            state =GlobalPos2LocalPos(Global.Goal.pos, Global.Robot.pos, Global.Robot.angle);
             %disp(strcat('----------','robot:',num2str(Global.Robot.pos),'/angle:',num2str(Global.Robot.angle)));
             der(m, 1:N-1) = der(m, 1:N-1) + ((action - mu'*state)*state/(sigma.^2))';
             der(m, N) = der(m, N) + ((action-mu'*state).^2-sigma.^2)/(sigma.^3);
