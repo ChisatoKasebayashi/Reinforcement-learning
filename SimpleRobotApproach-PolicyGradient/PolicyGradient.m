@@ -84,7 +84,14 @@ for l=1:L
     b = drs * diag(der*der') / trace(der*der');
     derJ = 1/M * ((drs-b) * der)';
     mu = mu + alpha *derJ(1:N-1);
-    sigma = sigma + alpha * derJ(N);    
+    sigma = sigma + alpha * derJ(N);
+    if sigma < 0.3
+        sigma =0.3;
+    end
+    if 3 < sigma
+        sigma =3;
+    end
+    fprintf('step:%d/sigma:%f/mu%f,%f\n',l,sigma,mu(1),mu(2));
     %disp(strcat('Episode:',num2str(l),' /Max:',num2str(max(max(rewards))), ' /Min:', num2str(min(min(rewards))), ' /Mean:', num2str(mean(mean(rewards)))));
     MaxR=[MaxR max(max(t_rewards))];
     AvgR=[AvgR mean(mean(t_rewards))];
