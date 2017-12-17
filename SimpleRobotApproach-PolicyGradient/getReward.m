@@ -1,3 +1,3 @@
 function reward = getReward(state)
-reward = -sqrt(sum(state.^2));
+reward = -state(1);
 end

@@ -29,7 +29,8 @@ for l=1:L
         Global.Goal.pos = [0, 0.8];
         Global.Robot.pos = [0, 0];
         Global.Robot.angle = deg2rad(60);
-        f_state =GlobalPos2LocalPos(Global.Goal.pos, Global.Robot.pos, Global.Robot.angle);
+        [Local.Goal.pos.x Local.Goal.pos.y] =GlobalPos2LocalPos(Global.Goal.pos, Global.Robot.pos, Global.Robot.angle);
+        f_state = getPolarCoordinates(Local.Goal.pos);
         t_rewards = [];
         for t=1:T
             state = f_state;
@@ -39,7 +40,8 @@ for l=1:L
             action = max(action, MinAng);
             %disp(strcat('robot:',num2str(Global.Robot.pos(1)),',',num2str(Global.Robot.pos(2)),'/angle:',num2str(Global.Robot.angle)));
             [Global.Robot.angle Global.Robot.pos] = stepWorldState(Global.Robot.pos,Global.Robot.angle, action, step);
-            state =GlobalPos2LocalPos(Global.Goal.pos, Global.Robot.pos, Global.Robot.angle);
+            [Local.Goal.pos.x Local.Goal.pos.y] = GlobalPos2LocalPos(Global.Goal.pos, Global.Robot.pos, Global.Robot.angle);
+            state = getPolarCoordinates(Local.Goal.pos);
             %disp(strcat('----------','robot:',num2str(Global.Robot.pos),'/angle:',num2str(Global.Robot.angle)));
             der(m, 1:N-1) = der(m, 1:N-1) + ((action - mu'*state)*state/(sigma.^2))';
             der(m, N) = der(m, N) + ((action-mu'*state).^2-sigma.^2)/(sigma.^3);
@@ -65,20 +67,6 @@ for l=1:L
             if abs(getReward(state)) < goal_area
                 break;
             end
-            
-            %{
-            if( and(m==M,1) )
-                figure(3);
-                clf;
-                hold on;
-                x = linspace(-pi/2, pi/2);
-                plot([action,action],[0,1],'r');
-                plot(x,gaussianFunction(mu,sigma,x));
-                xlim([-pi/2 pi/2]);
-                ylim([0 1]);
-                pause(0.01);
-            end
-            %}
         end
     end
     b = drs * diag(der*der') / trace(der*der');
