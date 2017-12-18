@@ -6,5 +6,12 @@ alpha = 0.9;
 
 N = 3; %(mu:1ŽŸŒ³, sigma:1ŽŸŒ³)
 
-[mu, sigma] = PolicyGradient(L, M, T, N, gamma, alpha);
 
+AvgR = [];
+r =zeros(50,20);
+for i=1:50
+    fprintf('***********PHASE:%d************\n', i);
+    [sigma, mu, AvgR] = PolicyGradient(L, M, T, N, gamma, alpha);
+    r(i,:) = AvgR;
+end
+csvwrite('AvgR_xy.csv',r);
