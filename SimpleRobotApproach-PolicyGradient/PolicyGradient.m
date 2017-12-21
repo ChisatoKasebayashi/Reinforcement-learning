@@ -1,4 +1,4 @@
-function [sigma, mu, AvgR ] = PolicyGradient(L, M, T, N, gamma, alpha)
+function [sigma, mu] = PolicyGradient(L, M, T, N, gamma, alpha)
 MaxAng = pi/6;
 MinAng = -(pi/6);
 goal_area = 0.15;
@@ -12,7 +12,6 @@ MaxR=[];
 AvgR=[];
 Dsum=[];
 
-%{
 figure(1);clf;
 movegui(figure(2),'west')
 figure(2);clf;
@@ -20,7 +19,6 @@ movegui(figure(2),'center')
 %figure(3);clf;
 %movegui(figure(3),'east')
 figure(4);clf;
-%}
 
 for l=1:L
     dr = 0;
@@ -51,7 +49,7 @@ for l=1:L
             t_rewards = [t_rewards, getReward(state)];
             drs(m) = drs(m) + gamma^(t-1)*r(length(r));
             dr = dr + gamma^(t-1)*r(length(r));
-            %{
+            
             if( and(m==M,1) )
                 plotSimulation(Global.Goal.pos, Global.Robot.pos,Global.Robot.angle, goal_area, strcat('Policy=',num2str(l),' Episode=',num2str(m)));
                 if t>1
@@ -65,7 +63,7 @@ for l=1:L
                     clf;
                 end
             end
-            %}
+            
             if abs(getReward(state)) < goal_area
                 break;
             end
@@ -83,13 +81,12 @@ for l=1:L
         sigma =3;
     end
     %}
-    %fprintf('step:%d/sigma:%f/mu%f,%f\n',l,sigma,mu(1),mu(2));
+    fprintf('step:%d/sigma:%f/mu%f,%f\n',l,sigma,mu(1),mu(2));
     %disp(strcat('Episode:',num2str(l),' /Max:',num2str(max(max(rewards))), ' /Min:', num2str(min(min(rewards))), ' /Mean:', num2str(mean(mean(rewards)))));
     MaxR=[MaxR max(max(t_rewards))];
     AvgR=[AvgR mean(mean(t_rewards))];
     Dsum=[Dsum dr/M];
 end
-%{
 figure(4);
 subplot(3,1,1)
 plot(1:L,MaxR)
@@ -100,6 +97,4 @@ title('average');
 subplot(3,1,3)
 plot(1:L,Dsum)
 title('discount sum');
-%}
-
 end
