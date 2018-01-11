@@ -1,4 +1,4 @@
-function theta = LeastSquaresPolicyIteration(L, M, T, B,center) % L:政策反復 M:エピソード T:ステップ B:ガウス関数の個数
+function [theta AvgR] = LeastSquaresPolicyIteration(L, M, T, B,center) % L:政策反復 M:エピソード T:ステップ B:ガウス関数の個数
 
 right = [0.1 0];
 left = [-0.1 0];
@@ -73,7 +73,7 @@ for l=1:L
             
             % εgreedy
             [v, a] = max(Q);
-            t_epsilon = 1 - l*0.09;
+            %t_epsilon = 1 - l*0.09;
             policy = ones(nactions, 1)*t_epsilon/nactions;
             policy(a) = 1-t_epsilon+t_epsilon / nactions;
             
@@ -89,12 +89,31 @@ for l=1:L
                 l_action = 4;
             end
             
+            
+            %{
             if and(m==M,1)
                 plotSimulation(state, robot_pos, goal_pos, actions(l_action),strcat('Policy=',num2str(l),' Episode=',num2str(m)));
             end
+            %}
             
             %行動の実行
             robot_pos = stepSimulation(robot_pos,l_action);
+            
+            % 行動の制限(0<x<1, 0<y<1　の範囲内でしか動かない)
+            
+            if robot_pos(2) > 1
+                robot_pos(2) = 1;
+            elseif robot_pos(2) < 0
+                robot_pos(2) = 0;
+            else
+            end
+            if robot_pos(1) < 0
+                robot_pos(1) = 0;
+            elseif robot_pos(1) > 1
+                robot_pos(1) = 1;
+            else
+            end
+                
             f_state = getRobotState(goal_pos, robot_pos, l_action);
             %---------------------------------------
             if t>1
@@ -109,12 +128,14 @@ for l=1:L
                 X = [X; x];
                 r = [r,getReward(state)]; 
                 if round(state(1),1) == 0 && round(state(2),1) == 0
+                    %{
                     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!');
                     disp('!!!!!!!!!!!GOAL!!!!!!!!!!!');
                     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!');
+                    %}
                     break;
                 end
-                
+                %{
                 if m==M
                     disp(strcat('Step=',num2str(t),', RobotPos(x,y):(',num2str(robot_pos(1)),', ',num2str(robot_pos(2)),')',', GoalPos(x,y):(',num2str(goal_pos_x),', ',num2str(goal_pos_y),'),', ' Reward=',num2str(r(length(r)))));
                     figure(2);
@@ -126,14 +147,16 @@ for l=1:L
                         clf(figure(2));
                     end
                 end
+                %}
                 %dr = dr + r *ganmma ^(t-1);
             end
             paction = l_action;
             pstate = state;
-       
+            %{
             if and(t==T,m==M)
                 disp('*************EPISODE*************');
             end
+            %}
         end
     end
     
@@ -143,6 +166,7 @@ for l=1:L
     AvgR=[AvgR mean(r)];
     Dsum=[Dsum dr/M];
 end
+%{
 figure(4);
 subplot(3,1,1)
 plot(1:L,MaxR)
@@ -154,5 +178,6 @@ title('平均報酬');
 subplot(3,1,3)
 plot(1:L,Dsum)
 title('割引報酬');
+%}
 end
 

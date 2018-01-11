@@ -26,8 +26,16 @@ gamma=0.95;
 nactions=3;
 sigma = 0.5;
 
-theta=LeastSquaresPolicyIteration(L,M,T,B,center);
+AvgR = [];
+r = [];
+for a = 1:30
+    [theta r] = LeastSquaresPolicyIteration(L,M,T,B,center);
+    AvgR = [AvgR; r];
+    fprintf('*********%d***********\n',a);
+end
+csvwrite('reward_seigennari.csv', AvgR);
 
+%{
 figure(3);
 syms sx sdx;
 subplot(1,3,1)
@@ -51,3 +59,4 @@ xlabel('x')
 ylabel('y')
 zlim([-50 30])
 title('forward')
+%}
