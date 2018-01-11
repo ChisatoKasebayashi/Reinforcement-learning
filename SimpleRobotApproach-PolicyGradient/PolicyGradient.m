@@ -26,7 +26,7 @@ for l=1:L
     for m=1:M
         drs(m) = 0;
         der(m, :) = zeros(1,N);
-        Global.Goal.pos = [0, 0.8];
+        Global.Goal.pos = [0, 1];
         Global.Robot.pos = [0, 0];
         Global.Robot.angle = deg2rad(60);
         [Local.Goal.pos.x Local.Goal.pos.y] =GlobalPos2LocalPos(Global.Goal.pos, Global.Robot.pos, Global.Robot.angle);
@@ -38,14 +38,28 @@ for l=1:L
             action = randn*sigma + mu'*state;
             action = min(action, MaxAng);
             action = max(action, MinAng);
+            %fprintf('action:%f\n', action);
             %disp(strcat('robot:',num2str(Global.Robot.pos(1)),',',num2str(Global.Robot.pos(2)),'/angle:',num2str(Global.Robot.angle)));
             [Global.Robot.angle Global.Robot.pos] = stepWorldState(Global.Robot.pos,Global.Robot.angle, action, step);
+            % s“®‚Ì§ŒÀ
+            if Global.Robot.pos(1)>0.5
+                Global.Robot.pos(1) = 0.5;
+            elseif Global.Robot.pos(1)<-0.5
+                Global.Robot.pos(1) = -0.5;
+            end
+            if Global.Robot.pos(2)>1
+                Global.Robot.pos(2) = 1;
+            elseif Global.Robot.pos(2)<0
+                Global.Robot.pos(2) = 0;
+            end
+            
             [Local.Goal.pos.x Local.Goal.pos.y] = GlobalPos2LocalPos(Global.Goal.pos, Global.Robot.pos, Global.Robot.angle);
             state = getPolarCoordinates(Local.Goal.pos);
             %disp(strcat('----------','robot:',num2str(Global.Robot.pos),'/angle:',num2str(Global.Robot.angle)));
             der(m, 1:N-1) = der(m, 1:N-1) + ((action - mu'*state)*state/(sigma.^2))';
             der(m, N) = der(m, N) + ((action-mu'*state).^2-sigma.^2)/(sigma.^3);
-            r = [r, getReward(state)];
+            %r = [r, getReward(state)];
+            r = [r,-abs(sqrt((Global.Goal.pos(1)-Global.Robot.pos(1)).^2 + (Global.Goal.pos(2)-Global.Robot.pos(2)).^2)) ];
             t_rewards = [t_rewards, getReward(state)];
             drs(m) = drs(m) + gamma^(t-1)*r(length(r));
             dr = dr + gamma^(t-1)*r(length(r));
@@ -63,10 +77,12 @@ for l=1:L
                     clf;
                 end
             end
-            
-            if abs(getReward(state)) < goal_area
+            %{
+            if abs(sqrt(Global.Robot.pos(1).^2 + Global.Robot.pos(2).^2)) < goal_area
+                fprintf('GOOOOOOOOOOOOOOOOOOOOAL\n');
                 break;
             end
+            %}
         end
     end
     b = drs * diag(der*der') / trace(der*der');
