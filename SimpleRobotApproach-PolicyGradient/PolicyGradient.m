@@ -66,6 +66,7 @@ for l=1:L
             
             if( and(m==M,1) )
                 plotSimulation(Global.Goal.pos, Global.Robot.pos,Global.Robot.angle, goal_area, strcat('Policy=',num2str(l),' Episode=',num2str(m)));
+                fprintf('Global.Robot(%d,%d)/Local.Goal(%d,%d)\n',Global.Robot.pos(1),Global.Robot.pos(2),Local.Goal.pos.x,Local.Goal.pos.y);
                 if t>1
                     figure(2);
                     hold on;
@@ -97,7 +98,7 @@ for l=1:L
         sigma =3;
     end
     %}
-    fprintf('step:%d/sigma:%f/mu%f,%f\n',l,sigma,mu(1),mu(2));
+    %fprintf('step:%d/sigma:%f/mu%f,%f\n',l,sigma,mu(1),mu(2));
     %disp(strcat('Episode:',num2str(l),' /Max:',num2str(max(max(rewards))), ' /Min:', num2str(min(min(rewards))), ' /Mean:', num2str(mean(mean(rewards)))));
     MaxR=[MaxR max(max(t_rewards))];
     AvgR=[AvgR mean(mean(t_rewards))];
