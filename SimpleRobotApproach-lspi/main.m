@@ -11,6 +11,8 @@ x = [-1 -0.5 0 0.5 1];
 y = [-1 -0.5 0 0.5 1];
 
 center = [];
+AvgR = [];
+r = [];
 for k=1:length(x)
     for j=1:length(y)
         c = [x(k), y(j)];
@@ -19,14 +21,19 @@ for k=1:length(x)
 end
 
 L = 20;
-M = 300;
+M = 200;
 T = 15;
 B=length(center);
 gamma=0.95;
 nactions=3;
 sigma = 0.5;
 
-theta=LeastSquaresPolicyIteration(L,M,T,B,center);
+for i = 1:30
+    [theta,r]=LeastSquaresPolicyIteration(L,M,T,B,center);
+    AvgR = [AvgR; r];
+    fprintf('*********%d***********\n',i);
+end
+csvwrite('reward_LSPI_naname.csv', AvgR);
 
 %{
 figure(3);
