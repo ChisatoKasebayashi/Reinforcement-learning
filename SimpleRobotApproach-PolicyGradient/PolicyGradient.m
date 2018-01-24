@@ -27,7 +27,10 @@ for l=1:L
         drs(m) = 0;
         der(m, :) = zeros(1,N);
         Global.Goal.pos = [0, 1];
-        Global.Robot.pos = [0, 0];
+        %èâä˙à íuÇÉâÉìÉ_ÉÄÇ…
+        a=-0.5;
+        b= 0.5;
+        Global.Robot.pos = [(b-a).*rand + a, 0];
         Global.Robot.angle = deg2rad(60);
         [Local.Goal.pos.x Local.Goal.pos.y] =GlobalPos2LocalPos(Global.Goal.pos, Global.Robot.pos, Global.Robot.angle);
         f_state = getPolarCoordinates(Local.Goal.pos);
@@ -47,8 +50,8 @@ for l=1:L
             elseif Global.Robot.pos(1)<-0.5
                 Global.Robot.pos(1) = -0.5;
             end
-            if Global.Robot.pos(2)>1
-                Global.Robot.pos(2) = 1;
+            if Global.Robot.pos(2)>1.2
+                Global.Robot.pos(2) = 1.2;
             elseif Global.Robot.pos(2)<0
                 Global.Robot.pos(2) = 0;
             end
@@ -59,8 +62,8 @@ for l=1:L
             der(m, 1:N-1) = der(m, 1:N-1) + ((action - mu'*state)*state/(sigma.^2))';
             der(m, N) = der(m, N) + ((action-mu'*state).^2-sigma.^2)/(sigma.^3);
             %r = [r, getReward(state)];
-            r = [r,-abs(sqrt((Global.Goal.pos(1)-Global.Robot.pos(1)).^2 + (Global.Goal.pos(2)-Global.Robot.pos(2)).^2)) ];
-            t_rewards = [t_rewards, getReward(state)];
+            r = [r,-abs(sqrt(Local.Goal.pos.x.^2+Local.Goal.pos.y.^2))];
+            t_rewards = [t_rewards, abs(sqrt(Global.Goal.pos(1)-(Global.Robot.pos(1)).^2 + (Global.Goal.pos(2)-Global.Robot.pos(2)).^2))];
             drs(m) = drs(m) + gamma^(t-1)*r(length(r));
             dr = dr + gamma^(t-1)*r(length(r));
             
@@ -78,12 +81,12 @@ for l=1:L
                     clf;
                 end
             end
-            %{
-            if abs(sqrt(Global.Robot.pos(1).^2 + Global.Robot.pos(2).^2)) < goal_area
+            
+            if abs(sqrt(Local.Goal.pos.x.^2+Local.Goal.pos.y.^2)) < goal_area
                 fprintf('GOOOOOOOOOOOOOOOOOOOOAL\n');
                 break;
             end
-            %}
+            
         end
     end
     b = drs * diag(der*der') / trace(der*der');
