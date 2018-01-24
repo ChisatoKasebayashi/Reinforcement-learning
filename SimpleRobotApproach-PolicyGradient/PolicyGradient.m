@@ -28,7 +28,7 @@ for l=1:L
     for m=1:M
         drs(m) = 0;
         der(m, :) = zeros(1,N);
-        Global.Goal.pos = [0, 0.8];
+        Global.Goal.pos = [0, 1];
         Global.Robot.pos = [0, 0];
         Global.Robot.angle = deg2rad(60);
         f_state =GlobalPos2LocalPos(Global.Goal.pos, Global.Robot.pos, Global.Robot.angle);
@@ -41,6 +41,19 @@ for l=1:L
             action = max(action, MinAng);
             %disp(strcat('robot:',num2str(Global.Robot.pos(1)),',',num2str(Global.Robot.pos(2)),'/angle:',num2str(Global.Robot.angle)));
             [Global.Robot.angle Global.Robot.pos] = stepWorldState(Global.Robot.pos,Global.Robot.angle, action, step);
+            if Global.Robot.pos(1)>0.5
+                Global.Robot.pos(1)=0.5;
+            elseif Global.Robot.pos(1)<-0.5
+                Global.Robot.pos(1)=-0.5;
+            else
+            end
+            if Global.Robot.pos(2)>1
+                Global.Robot.pos(2)=1;
+            elseif Global.Robot.pos(2)<0
+                Global.Robot.pos(2)=0;
+            else
+            end
+            
             state =GlobalPos2LocalPos(Global.Goal.pos, Global.Robot.pos, Global.Robot.angle);
             %disp(strcat('----------','robot:',num2str(Global.Robot.pos),'/angle:',num2str(Global.Robot.angle)));
             der(m, 1:N-1) = der(m, 1:N-1) + ((action - mu'*state)*state/(sigma.^2))';
