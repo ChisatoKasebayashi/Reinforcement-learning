@@ -66,7 +66,7 @@ for l=1:L
             t_rewards = [t_rewards, abs(sqrt(Global.Goal.pos(1)-(Global.Robot.pos(1)).^2 + (Global.Goal.pos(2)-Global.Robot.pos(2)).^2))];
             drs(m) = drs(m) + gamma^(t-1)*r(length(r));
             dr = dr + gamma^(t-1)*r(length(r));
-            %{
+            
             if( and(m==M,1) )
                 plotSimulation(Global.Goal.pos, Global.Robot.pos,Global.Robot.angle, goal_area, strcat('Policy=',num2str(l),' Episode=',num2str(m)));
                 fprintf('Global.Robot(%d,%d)/Local.Goal(%d,%d)\n',Global.Robot.pos(1),Global.Robot.pos(2),Local.Goal.pos.x,Local.Goal.pos.y);
@@ -81,7 +81,7 @@ for l=1:L
                     clf;
                 end
             end
-            %}
+            
             if abs(sqrt(Local.Goal.pos.x.^2+Local.Goal.pos.y.^2)) < goal_area
                 %fprintf('GOOOOOOOOOOOOOOOOOOOOAL\n');
                 break;
