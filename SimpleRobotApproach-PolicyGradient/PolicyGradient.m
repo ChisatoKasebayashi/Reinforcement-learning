@@ -41,6 +41,7 @@ for l=1:L
             action = max(action, MinAng);
             %disp(strcat('robot:',num2str(Global.Robot.pos(1)),',',num2str(Global.Robot.pos(2)),'/angle:',num2str(Global.Robot.angle)));
             [Global.Robot.angle Global.Robot.pos] = stepWorldState(Global.Robot.pos,Global.Robot.angle, action, step);
+            %{
             if Global.Robot.pos(1)>0.5
                 Global.Robot.pos(1)=0.5;
             elseif Global.Robot.pos(1)<-0.5
@@ -53,6 +54,7 @@ for l=1:L
                 Global.Robot.pos(2)=0;
             else
             end
+            %}
             
             state =GlobalPos2LocalPos(Global.Goal.pos, Global.Robot.pos, Global.Robot.angle);
             %disp(strcat('----------','robot:',num2str(Global.Robot.pos),'/angle:',num2str(Global.Robot.angle)));
@@ -76,9 +78,6 @@ for l=1:L
                     clf;
                 end
             end
-            if abs(getReward(state)) < goal_area
-                break;
-            end
             
             if( and(m==M,1) )
                 figure(3);
@@ -92,6 +91,9 @@ for l=1:L
                 pause(0.01);
             end
             %}
+            if abs(getReward(state)) < goal_area
+                break;
+            end
         end
     end
     b = drs * diag(der*der') / trace(der*der');

@@ -9,8 +9,8 @@ hold on;
 
 %whitebg(field,[0 1 0])
 
-tl = title(strcat('Policy=',num2str(l),' Episode=',num2str(m)));
-set(tl,'FontSize',16);
+%tl = title(strcat('Policy=',num2str(l),' Episode=',num2str(m)));
+%set(tl,'FontSize',16);
 
 xlim([-0.8 0.8]);
 ylim([-0.3 1.3]);
@@ -33,9 +33,9 @@ plot(line_robot([1,2],1),line_robot([1,2],2),'-','Color','k');
 %saveas(field, 'simpleSim.jpg');
 
 grid on;
-pause(0.1);
+%pause(0.1);
 if(t==15)
-    image_name = strcat('Policy',num2str(l))
-    saveas(gcf,image_name,'epsc')
+    image_name = strcat('Policy',num2str(l),'.pdf')
+    saveas(gcf,image_name)
 end
 end
