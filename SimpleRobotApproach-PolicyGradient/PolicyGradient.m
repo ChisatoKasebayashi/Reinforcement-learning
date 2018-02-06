@@ -26,11 +26,12 @@ for l=1:L
     for m=1:M
         drs(m) = 0;
         der(m, :) = zeros(1,N);
-        Global.Goal.pos = [0, 1];
+        Global.Goal.pos = [0.2, 1];
         %‰ŠúˆÊ’u‚ðƒ‰ƒ“ƒ_ƒ€‚É
         a=-0.5;
         b= 0.5;
-        Global.Robot.pos = [(b-a).*rand + a, 0];
+        %Global.Robot.pos = [(b-a).*rand + a, 0];
+        Global.Robot.pos = [0, 0];
         Global.Robot.angle = deg2rad(60);
         [Local.Goal.pos.x Local.Goal.pos.y] =GlobalPos2LocalPos(Global.Goal.pos, Global.Robot.pos, Global.Robot.angle);
         f_state = getPolarCoordinates(Local.Goal.pos);
@@ -66,10 +67,10 @@ for l=1:L
             t_rewards = [t_rewards, abs(sqrt(Global.Goal.pos(1)-(Global.Robot.pos(1)).^2 + (Global.Goal.pos(2)-Global.Robot.pos(2)).^2))];
             drs(m) = drs(m) + gamma^(t-1)*r(length(r));
             dr = dr + gamma^(t-1)*r(length(r));
-            %{
             if( and(m==M,1) )
-                plotSimulation(Global.Goal.pos, Global.Robot.pos,Global.Robot.angle, goal_area, strcat('Policy=',num2str(l),' Episode=',num2str(m)));
+                plotSimulation(Global.Goal.pos, Global.Robot.pos,Global.Robot.angle, goal_area,l,m,t);
                 fprintf('Global.Robot(%d,%d)/Local.Goal(%d,%d)\n',Global.Robot.pos(1),Global.Robot.pos(2),Local.Goal.pos.x,Local.Goal.pos.y);
+                %{
                 if t>1
                     figure(2);
                     hold on;
@@ -80,8 +81,8 @@ for l=1:L
                     figure(2);
                     clf;
                 end
+                %}
             end
-            %}
             if abs(sqrt(Local.Goal.pos.x.^2+Local.Goal.pos.y.^2)) < goal_area
                 %fprintf('GOOOOOOOOOOOOOOOOOOOOAL\n');
                 break;

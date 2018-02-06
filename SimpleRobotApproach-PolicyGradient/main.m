@@ -8,9 +8,9 @@ N = 3; %(mu:1ŽŸŒ³, sigma:1ŽŸŒ³)
 
 AvgR = [];
 r = [];
-for i=1:30
+%for i=1:30
     [sigma, mu,AvgR] = PolicyGradient(L, M, T, N, gamma, alpha);
     r = [r; AvgR];
-    fprintf('*************%d**************\n',i);
-end
-csvwrite('AvgR_rtheta.csv',r);
+    %fprintf('*************%d**************\n',i);
+%end
+%csvwrite('AvgR_rtheta.csv',r);
