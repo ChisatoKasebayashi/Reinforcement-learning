@@ -28,12 +28,12 @@ gamma=0.95;
 nactions=3;
 sigma = 0.5;
 
-for i = 1:30
+%for i = 1:30
     [theta,r]=LeastSquaresPolicyIteration(L,M,T,B,center);
-    AvgR = [AvgR; r];
-    fprintf('*********%d***********\n',i);
-end
-csvwrite('reward_LSPI_naname.csv', AvgR);
+%    AvgR = [AvgR; r];
+%    fprintf('*********%d***********\n',i);
+%end
+%csvwrite('reward_LSPI_naname.csv', AvgR);
 
 %{
 figure(3);

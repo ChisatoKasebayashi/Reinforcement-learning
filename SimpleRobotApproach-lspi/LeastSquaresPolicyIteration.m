@@ -93,15 +93,14 @@ for l=1:L
             else
                 l_action = 3;
             end
-            %{
             if and(m==M,1)
-                plotSimulation(robot, goal_pos, goal_area, strcat('Policy=',num2str(l),' Episode=',num2str(m)));
+                plotSimulation(robot, goal_pos, goal_area,l,m,t);
                % dplotSimulation(robot, state, goal_area, strcat('Policy=',num2str(l),' Episode=',num2str(m)));
             end
-            %}
             %çsìÆÇÃé¿çs
             robot = stepSimulation(robot, actions(l_action));
             %çsìÆÇÃêßå¿
+            %{
             if robot(1) < -0.5
                 robot(1) = -0.5;
             elseif robot(1) >0.5
@@ -114,7 +113,7 @@ for l=1:L
                 robot(2) = 1;
             else
             end
-            
+            %}
             %f_state = getRobotState(goal_pos, robot);
             f_state = GlobalPos2LocalPos(goal_pos,robot);
             %---------------------------------------
