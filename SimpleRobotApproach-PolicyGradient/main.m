@@ -9,10 +9,10 @@ N = 3; %(mu:1ŽŸŒ³, sigma:1ŽŸŒ³)
 
 AvgR = [];
 r =[]
-for i=1:30
-    fprintf('***********PHASE:%d************\n', i);
+%for i=1:30
+%    fprintf('***********PHASE:%d************\n', i);
     [sigma, mu, AvgR] = PolicyGradient(L, M, T, N, gamma, alpha);
     r(i,:) = AvgR;
     %fprintf('*************%d**************\n',i);
-end
-csvwrite('AvgR_xy.csv',r);
+%end
+%csvwrite('AvgR_xy.csv',r);

@@ -62,9 +62,9 @@ for l=1:L
             t_rewards = [t_rewards, getReward(state)];
             drs(m) = drs(m) + gamma^(t-1)*r(length(r));
             dr = dr + gamma^(t-1)*r(length(r));
-            %{
             if( and(m==M,1) )
-                plotSimulation(Global.Goal.pos, Global.Robot.pos,Global.Robot.angle, goal_area, strcat('Policy=',num2str(l),' Episode=',num2str(m)));
+                plotSimulation(Global.Goal.pos, Global.Robot.pos,Global.Robot.angle, goal_area, l,m,t);
+            %{
                 if t>1
                     figure(2);
                     hold on;
@@ -76,12 +76,10 @@ for l=1:L
                     clf;
                 end
             end
-            %}
             if abs(getReward(state)) < goal_area
                 break;
             end
             
-            %{
             if( and(m==M,1) )
                 figure(3);
                 clf;
