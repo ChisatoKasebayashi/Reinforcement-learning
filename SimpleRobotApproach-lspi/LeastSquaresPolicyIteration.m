@@ -11,7 +11,7 @@ t_epsilon = 0.1;                            % ε-greedyの変数 0.2 小さくなると
 sigma = 0.5;                              % ガウス関数の幅 0.5
 
 %ゴール地点
-goal_pos_x = 0.6;
+goal_pos_x = 0.2;
 goal_pos_y = 1.0;
 
 goal_pos = [goal_pos_x goal_pos_y];
@@ -40,11 +40,11 @@ for l=1:L
         %ゴール地点の変更
         goal_pos_x = round(rand(), 1);
         goal_pos_y =  round(rand(), 1);
-        goal_pos = [goal_pos_x goal_pos_y];
+        goal_pos = [0.2 1];
         
         % 一回目のエピソードの初期値
         robot_pos = [];
-        first_robot_pos = [0.6; 0];
+        first_robot_pos = [0; 0];
         robot_pos = first_robot_pos;
         first_l_action = 5;
         f_state = getRobotState(goal_pos, first_robot_pos, first_l_action);
@@ -90,17 +90,15 @@ for l=1:L
             end
             
             
-            %{
             if and(m==M,1)
-                plotSimulation(state, robot_pos, goal_pos, actions(l_action),strcat('Policy=',num2str(l),' Episode=',num2str(m)));
+                plotSimulation(state, robot_pos, goal_pos, actions(l_action),l,m,t);
             end
-            %}
             
             %行動の実行
             robot_pos = stepSimulation(robot_pos,l_action);
             
             % 行動の制限(0<x<1, 0<y<1　の範囲内でしか動かない)
-            
+            %{
             if robot_pos(2) > 1
                 robot_pos(2) = 1;
             elseif robot_pos(2) < 0
@@ -113,6 +111,7 @@ for l=1:L
                 robot_pos(1) = 1;
             else
             end
+            %}
                 
             f_state = getRobotState(goal_pos, robot_pos, l_action);
             %---------------------------------------
@@ -127,7 +126,7 @@ for l=1:L
                 x = [(pphi - ganmma * aphi)'];
                 X = [X; x];
                 r = [r,getReward(state)]; 
-                if round(state(1),1) == 0 && round(state(2),1) == 0
+                if abs(sqrt(sum((goal_pos+state).^2))) < 0.15
                     %{
                     disp('!!!!!!!!!!!!!!!!!!!!!!!!!!');
                     disp('!!!!!!!!!!!GOAL!!!!!!!!!!!');
