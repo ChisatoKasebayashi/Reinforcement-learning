@@ -1,10 +1,10 @@
 L = 20;
-M = 2000;
+M = 3000;
 T = 20;
-gamma = 0.99;
-alpha = 1;
+gamma = 0.95;
+alpha = 0.8;
 
-N = 2; %(mu:1ŽŸŒ³, sigma:1ŽŸŒ³)
+N = 3; %(mu:1ŽŸŒ³, sigma:1ŽŸŒ³)
 
 [mu, sigma] = NaturalActorCritic(L, M, T, N, gamma, alpha);
 
